@@ -1,0 +1,11 @@
+name: biobb_wf_flexserv_tutorial
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - biobb_flexserv
+  - nb_conda_kernels
+  - plotly
+  - nglview
+  - conda
+
