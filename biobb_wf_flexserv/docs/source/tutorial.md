@@ -1,5 +1,5 @@
 # Protein structure flexibility tutorial using BioExcel Building Blocks (biobb) and FlexServ tools
-### Based on the FlexServ server: https://mmb.irbbarcelona.org/FlexServ/
+### Based on the FlexServ server: [https://mmb.irbbarcelona.org/FlexServ/](https://mmb.irbbarcelona.org/FlexServ/)
 
 ***
 This tutorial aims to illustrate the process of generating **protein conformational ensembles** from **3D structures** and analysing its **molecular flexibility**, step by step, using the **BioExcel Building Blocks library (biobb)**. 
@@ -12,17 +12,17 @@ The codes wrapped are the ***FlexServ*** and ***PCAsuite*** tools:
 
 **FlexServ: an integrated tool for the analysis of protein flexibility.**<br>
 *Bioinformatics, Volume 25, Issue 13, 1 July 2009, Pages 1709–1710.*<br>
-*Available at: https://doi.org/10.1093/bioinformatics/btp304*
+*Available at: [https://doi.org/10.1093/bioinformatics/btp304](https://doi.org/10.1093/bioinformatics/btp304)*
 
-**PCA suite**: https://mmb.irbbarcelona.org/software/pcasuite/
+**PCA suite**: [https://mmb.irbbarcelona.org/software/pcasuite/](https://mmb.irbbarcelona.org/software/pcasuite/)
 
 **Essential Dynamics:  A Tool for Efficient Trajectory Compression and Management.**<br>
 *J. Chem. Theory Comput. 2006, 2, 2, 251–258*<br>
-*Available at: https://doi.org/10.1021/ct050285b*
+*Available at: [https://doi.org/10.1021/ct050285b](https://doi.org/10.1021/ct050285b)*
 
 **pyPcazip: A PCA-based toolkit for compression and analysis of molecular simulation data.**<br>
 *SoftwareX, Volume 5, 2016, Pages 44-50*<br>
-*Available at: https://doi.org/10.1016/j.softx.2016.04.002*
+*Available at: [https://doi.org/10.1016/j.softx.2016.04.002](https://doi.org/10.1016/j.softx.2016.04.002)*
 
 ***
 
@@ -271,7 +271,7 @@ The initial condition is a **native structure** (or MD-averaged conformation) th
 Reference: <br>
 **Exploring the Suitability of Coarse-Grained Techniques for the Representation of Protein Dynamics.**<br>
 *Biophysical Journal, Volume 95, Issue 5, 1 September 2008, Pages 2127-2138*<br>
-*Available at: https://doi.org/10.1529/biophysj.107.119115*
+*Available at: [https://doi.org/10.1529/biophysj.107.119115](https://doi.org/10.1529/biophysj.107.119115*)*
 
 
 ***
@@ -500,7 +500,7 @@ view
 
 [Tirion (1996)](https://link.aps.org/doi/10.1103/PhysRevLett.77.1905) proposed a **simplified model** where the **interaction** between two atoms was described by **Hookean pairwise potential** where the distances are taken to be at the minimum, avoiding the minimization (referred as **Elastic Network Model** -ENM-). This idea being further extended to use **coarse-grained** (\\(C\alpha\\)) protein representation by several research groups, as in the **Gaussian Network Model** -GNM- ([Bahar et al. 1997](https://linkinghub.elsevier.com/retrieve/pii/S1359027897000242); [Haliloglu et al. 1997](https://link.aps.org/doi/10.1103/PhysRevLett.79.3090)). The **GNM model** was later extended to a 3-D, vectorial **Anisotropic Network Model** -ANM-, which is the formalism implemented in the **FlexServ server** and the **BioBB FlexServ module** ([Atilgan et al. 2001](https://www.biophysj.org/cgi/content/abstract/80/1/505)). Through the **diagonalization** of the **hessian matrix**, the **ANM** provides **eigenvalues** and **eigenvectors** that not only describe the **frequencies** and **shapes** of the **normal modes**, but also their **directions**.
 
-Within the **Elastic Network Model** approach (ENM) the network topology is described by a **Kirchhoff matrix** Γ of **inter-atomic contacts** where the ij-th element is equal to -1 if nodes (i.e. \\(C\alpha\\)) i and j are within the cutoff distance \\(r_{c}$, and zero otherwise, and the **diagonal elements** (ii-th) are equal to the **connectivity of the residue**:
+Within the **Elastic Network Model** approach (ENM) the network topology is described by a **Kirchhoff matrix** Γ of **inter-atomic contacts** where the ij-th element is equal to -1 if nodes (i.e. \\(C\alpha\\)) i and j are within the cutoff distance \\(r_{c}\\), and zero otherwise, and the **diagonal elements** (ii-th) are equal to the **connectivity of the residue**:
 
 <center>
 $$\large \Gamma_{ii} = - \sum\limits_{k|k\neq i}^{N} \Gamma_{ik}$$
@@ -570,7 +570,7 @@ Our **FlexServ server** and **BioBB FlexServ module** implement the **ANM** form
 - The **Kovacs**, **inverse exponential** formalism, in which the **force constant** is defined by a **continuous function**; the default values of C=40 kcal/mol Å², and \\(r_{ij}^{0}=3.8 Å\\) is used; \\(as_{ij}\\) term is neglected.
 
 
-- The **Mixed** formalism, in which the **force constant** follows a complex definition with all parameters (\\(r_{c}$, \\(C_{cart}\\) and \\(C_{cont}\\)) fitted according to **MD simulations** as explained before:
+- The **Mixed** formalism, in which the **force constant** follows a complex definition with all parameters (\\(r_{c}\\), \\(C_{cart}\\) and \\(C_{cont}\\)) fitted according to **MD simulations** as explained before:
 
 <center>
 $$K_{ij}=\left\{\begin{matrix} S_{ij}\leq 3 & K_{ij}=\frac{C_{seq}}{S_{ij}^2}\space \\ S_{ij}>3 & 
@@ -709,15 +709,15 @@ The next cell is **compressing** the previously generated **coarse-grained** tra
 
 References: <br>
 
-**PCA suite**: https://mmb.irbbarcelona.org/software/pcasuite/
+**PCA suite**: [https://mmb.irbbarcelona.org/software/pcasuite/](https://mmb.irbbarcelona.org/software/pcasuite/)
 
 **Essential Dynamics:  A Tool for Efficient Trajectory Compression and Management.**<br>
 *J. Chem. Theory Comput. 2006, 2, 2, 251–258*<br>
-*Available at: https://doi.org/10.1021/ct050285b*
+*Available at: [https://doi.org/10.1021/ct050285b](https://doi.org/10.1021/ct050285b)*
 
 **pyPcazip: A PCA-based toolkit for compression and analysis of molecular simulation data.**<br>
 *SoftwareX, Volume 5, 2016, Pages 44-50*<br>
-*Available at: https://doi.org/10.1016/j.softx.2016.04.002*
+*Available at: [https://doi.org/10.1016/j.softx.2016.04.002](https://doi.org/10.1016/j.softx.2016.04.002)*
 
 ***
 **Building Blocks** used:
@@ -1697,23 +1697,23 @@ References:
 
 **Similarities between principal components of protein dynamics and random diffusion.**<br>
 *Phys. Rev. E 2000; 62, 8438*<br>
-*Available at: https://doi.org/10.1103/PhysRevE.62.8438*
+*Available at: [https://doi.org/10.1103/PhysRevE.62.8438](https://doi.org/10.1103/PhysRevE.62.8438)*
 
 **Convergence of sampling in protein simulations.**<br>
 *Phys. Rev. E 2002; 65, 031910*<br>
-*Available at: https://doi.org/10.1103/PhysRevE.65.031910*
+*Available at: [https://doi.org/10.1103/PhysRevE.65.031910](https://doi.org/10.1103/PhysRevE.65.031910)*
 
 **Exploring the Essential Dynamics of B-DNA.**<br>
 *J. Chem. Theory Comput. 2005, 1, 790-800*<br>
-*Available at: https://doi.org/10.1021/ct050051s*
+*Available at: [https://doi.org/10.1021/ct050051s](https://doi.org/10.1021/ct050051s)*
 
 **Convergent dynamics in the protease enzymatic superfamily.**<br>
 *J. Am. Chem. Soc. 2006, 128, 9766-9772*<br>
-*Available at: https://doi.org/10.1021/ja060896t*
+*Available at: [https://doi.org/10.1021/ja060896t](https://doi.org/10.1021/ja060896t)*
 
 **Measuring and comparing structural fluctuation patterns in large protein datasets.**<br>
 *Bioinformatics 2012, 28, 19, 2431–2440*<br>
-*Available at: https://doi.org/10.1093/bioinformatics/bts445*
+*Available at: [https://doi.org/10.1093/bioinformatics/bts445](https://doi.org/10.1093/bioinformatics/bts445)*
 
 ***
 **Building Blocks** used:
