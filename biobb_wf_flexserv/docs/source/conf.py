@@ -35,7 +35,7 @@ extensions = [
     'sphinx.ext.ifconfig',
     'sphinx.ext.viewcode',
     'sphinx.ext.napoleon',
-    'sphinx_toolbox.latex',
+    #'sphinx_toolbox.latex',
     'recommonmark'
 ]
 

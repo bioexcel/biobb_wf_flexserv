@@ -119,6 +119,7 @@ md_pcz = "Files/1a32.MoDEL.pcz"
 
 <a id="intro"></a>
 ***
+
 ## Molecular Flexibility Representation/Generation
 
 Despite recent advances in **experimental techniques**, the study of **molecular flexibility** is mostly a task for **theoretical methods**. The most powerful of them is **atomistic molecular dynamics** (MD), a rigorous method with solid physical foundations, which provides accurate representations of **protein flexibility** under **physiological-like environments**. Unfortunately, despite its power, MD is a **complex technique**, **computationally expensive** and their use requires a certain **degree of expertise**. The alternative to **atomistic MD** is the use of **coarse-grained** methods coupled to **simple potentials**. By using these techniques we assume a **lost of atomic detail** to gain formal and **computational simplicity** in the representation of near-native state **flexibility** of proteins. Unfortunately, despite its power, the practical use of coarse-grained methods is still limited, due mostly to the lack of **standardized protocols** for analysis and the existence of a myriad of different algorithms distributed in different websites.
@@ -133,7 +134,8 @@ This tutorial shows how to extract **molecular flexibility** (conformational ens
 
 <a id="fetch"></a>
 ***
-## Fetching PDB structure
+
+### Fetching PDB structure
 Downloading **PDB structure** with the **protein molecule** from the RCSB PDB database.<br>
 Alternatively, a **PDB file** can be used as starting structure. <br>
 ***
@@ -160,7 +162,8 @@ pdb(output_pdb_path=downloaded_pdb,
 ```
 
 <a id="vis3D"></a>
-### Visualizing 3D structure
+
+#### Visualizing 3D structure
 Visualizing the downloaded/given **PDB structure** using **NGL**: 
 
 
@@ -176,7 +179,8 @@ view
 
 <a id="coarse-grain"></a>
 ***
-## Generate Coarse Grain Structure
+
+### Generate Coarse Grain Structure
 Extracting the **alpha carbons** from the **protein structure** to generate a reduced, **coarse grain structure**. This structure is the one used by the different **FlexServ ensemble generators** (BD, DMD, NMA).<br> <br>
 ***
 **Building Blocks** used:
@@ -199,7 +203,8 @@ extract_atoms(input_structure_path=downloaded_pdb,
 ```
 
 <a id="vis3D_CA"></a>
-### Visualizing 3D structure
+
+#### Visualizing 3D structure
 Visualizing the CA-only **PDB structure** using **NGL**: 
 
 
@@ -216,7 +221,8 @@ view
 
 <a id="bd"></a>
 ***
-## Brownian Dynamics
+
+### Brownian Dynamics
 
 The **Brownian Dynamics** (BD) method introduces the protein in an **stochastic bath** that keeps the **temperature constant** and modulates the otherwise extreme oscillations of the residues. This bath is simulated with two terms accounting for a **velocity-dependent friction** and **stochastic forces** due to the **solvent environment**.
 **Velocity Verlet** algorithm is used to solve the **stochastic differential equation** (equation of motion) for **alpha-carbons** ($C\alpha$):<br><br>
@@ -300,7 +306,8 @@ bd_run(
 
 <a id="bd_dcd"></a>
 ***
-## Fitting and converting BD trajectory to DCD (visualization)
+
+### Fitting and converting BD trajectory to DCD (visualization)
 Fitting and converting the generated **Brownian Dynamics** (BD) **coarse-grained trajectory** from the **mdcrd** format to a **dcd** format, for the sake of visualization with **NGL** (see next cell).<br> <br>
 ***
 **Building Blocks** used:
@@ -332,7 +339,8 @@ cpptraj_rms(input_top_path=ca_pdb,
 ```
 
 <a id="vis3D_BD"></a>
-### Visualizing trajectory
+
+#### Visualizing trajectory
 Visualizing the **CG trajectory** using **NGL**: 
 
 
@@ -347,7 +355,8 @@ view
 
 <a id="dmd"></a>
 ***
-## Discrete Molecular Dynamics
+
+### Discrete Molecular Dynamics
 
 With the **Discrete Molecular Dynamics** (DMD) method, the proteins are modelled as a system of beads ($C\alpha$ atoms) interacting through a **discontinuous potential** (square wells in the used tool). Outside the discontinuities, **potentials** are considered constant, thereby implying a **ballistic regime** for the particles (**constant potential, constant velocity**) in all conditions, except at such time as when the particles reach a **potential discontinuity** (this is called “an **event**” or “a **collision**”). At this time, the **velocities** of the colliding particles are modified by imposing **conservation of the linear momentum**, **angular momentum**, and **total energy**. Since the particles were constrained to move within a configurational space where the **potential energy** is constant (**infinite square wells**), the **kinetic energy** remains unchanged and therefore all collisions are assumed to be **elastic**.
 
@@ -436,7 +445,8 @@ dmd_run(
 
 <a id="dmd_dcd"></a>
 ***
-## Fitting and converting DMD trajectory to DCD (visualization)
+
+### Fitting and converting DMD trajectory to DCD (visualization)
 Fitting and converting the generated **Discrete Molecular Dynamics** (DMD) **coarse-grained trajectory** from the **mdcrd** format to a **dcd** format, for the sake of visualization with **NGL** (see next cell).<br> <br>
 ***
 **Building Blocks** used:
@@ -467,7 +477,8 @@ cpptraj_rms(input_top_path=ca_pdb,
 ```
 
 <a id="vis3D_DMD"></a>
-### Visualizing trajectory
+
+#### Visualizing trajectory
 Visualizing the **CG trajectory** using **NGL**: 
 
 
@@ -482,7 +493,8 @@ view
 
 <a id="nma"></a>
 ***
-## Normal Mode Analysis
+
+### Normal Mode Analysis
 
 **Normal Mode Analysis** (NMA) can be defined as the **multidimensional** treatment of **coupled oscillators** from the analysis of **force-derivatives** in **equilibrium conformations**. This methodology assumes that the **displacement** of an **atom** from its **equilibrium position** is small and that the **potential energy** in the vicinity of the **equilibrium position** can be approximated as a **sum of terms** that are **quadratic** in the **atomic displacements**. In its purest form, it uses the same **all-atom force field** from a **MD simulation**, implying a prior **in vacuo minimization** ([Go and Scheraga 1976](https://pubs.acs.org/cgi-bin/abstract.cgi/mamobx/1976/9/i04/f-pdf/f_ma60052a001.pdf?sessid=6006l3); [Brooks III, Karplus et al. 1987](https://adsabs.harvard.edu/abs/1990PhT....43b.120B)). 
 
@@ -604,7 +616,8 @@ nma_run(
 
 <a id="nma_dcd"></a>
 ***
-## Fitting and converting NMA trajectory to DCD (visualization)
+
+### Fitting and converting NMA trajectory to DCD (visualization)
 Fitting and converting the generated **Normal Mode Analysis** (NMA) **coarse-grained trajectory** from the **mdcrd** format to a **dcd** format, for the sake of visualization with **NGL** (see next cell).<br> <br>
 ***
 **Building Blocks** used:
@@ -635,7 +648,8 @@ cpptraj_rms(input_top_path=ca_pdb,
 ```
 
 <a id="vis3D_NMA"></a>
-### Visualizing trajectory
+
+#### Visualizing trajectory
 Visualizing the **CG trajectory** using **NGL**: 
 
 
@@ -650,7 +664,8 @@ view
 
 <a id="flex"></a>
 ***
-# Molecular Flexibility Analyses
+
+## Molecular Flexibility Analyses
 
 
 The following cells of the notebook incorporate a large variety of methods to **characterize flexibility**. From basic analysis like **structural oscillation** using **root mean square deviation** (RMSd) to more complex methods such as **Essential Dynamics** (ED) routines (Amadei, et al., 1993). **Essential Dynamics** technique, based in the well-known **Principal Components Analyisis** (PCA) statistical method, is extensively used to characterize the most important **deformation modes** obtained by **diagonalization** of the **trajectory covariance matrix**. The **eigenvectors** represent the nature of the **essential deformation patterns**, while the **eigenvalues** can be transformed into the **frequencies** or **stiffness** of these movements. **Essential deformation movements** are ranked by importance and can be visualized and processed to obtain information (see Meyer, et al., 2006; Rueda, et al., 2007a for a detailed explanation), such as **B-Factor profiles**, the **collectivity index** (a measure of the collective nature of protein motions, Brüschweiler, 1995), the **variance profile**, the **dimensionality** (the number of movements defining a percentage of variance), or the **size of the essential space** (the number of modes with eigenvalues > 1 Å²). **Lindemann’s indexes** are computed to evaluate the **liquid/solid** nature of the entire or partial regions of the protein (Rueda, et al., 2007b; Zhou, et al., 1999).
@@ -664,7 +679,8 @@ In all the analysis the resulting data is presented as a **json-formatted files*
 
 <a id="pcazip"></a>
 ***
-## PCAsuite: Compressing trajectory
+
+### PCAsuite: Compressing trajectory
 
 **PCAsuite** is used to compress **Molecular Dynamics (MD) trajectories** using **Principal Component Analysis (PCA)** algorithms. This technique offers a good **compression ratio** at the expense of **losing some precision** in the trajectory.
 
@@ -740,7 +756,8 @@ pcz_zip( input_pdb_path=ca_pdb,
 
 <a id="pcaunzip"></a>
 ***
-## PCAsuite: Uncompressing trajectory
+
+### PCAsuite: Uncompressing trajectory
 
 The **PCA suite** **data compression** method based on **principal component analysis** works remarkably well with **MD trajectory data**, permitting files to be reduced to typically less than **one tenth** of their **original size** with very acceptable levels of approximation. 
 
@@ -816,7 +833,8 @@ cpptraj_rms(input_top_path=ca_pdb,
 ```
 
 <a id="vis3D_PCZ_BD"></a>
-### Visualizing trajectory
+
+#### Visualizing trajectory
 Visualizing the **original** and the **uncompressed BD trajectories** using **NGL**, for the sake of comparison: 
 
 
@@ -834,7 +852,8 @@ ipywidgets.HBox([view1, view2])
 <img src='_static/traj4.gif' style='float:left; width:50%'></img><img src='_static/traj5.gif' style='float:left; width:50%'></img>
 
 <a id="vis3D_PCZ_DMD"></a>
-### Visualizing trajectory
+
+#### Visualizing trajectory
 Visualizing the **original** and the **uncompressed DMD trajectories** using **NGL**, for the sake of comparison: 
 
 
@@ -852,7 +871,8 @@ ipywidgets.HBox([view1, view2])
 <img src='_static/traj6.gif' style='float:left; width:50%'></img><img src='_static/traj7.gif' style='float:left; width:50%'></img>
 
 <a id="vis3D_PCZ_NMA"></a>
-### Visualizing trajectory
+
+#### Visualizing trajectory
 Visualizing the **original** and the **uncompressed NMA trajectories** using **NGL**, for the sake of comparison: 
 
 
@@ -871,7 +891,8 @@ ipywidgets.HBox([view1, view2])
 
 <a id="pca_report"></a>
 ***
-## PCAsuite: Principal Components Analysis Report
+
+### PCAsuite: Principal Components Analysis Report
 
 The result of the **PCA analysis** is the generation of a set of **eigenvectors** (the modes or the principal components), which describe the nature of the **deformation movements** of the protein and a set of **eigenvalues**, which indicate the **stiffness** associated to every **mode**. By default the **eigenvalues** appear in distance² units, but can be transformed in **energy units** using **harmonic approximation**.
 
@@ -903,7 +924,7 @@ with open(pcz_report, 'r') as f:
 print(json.dumps(pcz_info, indent=2))
 ```
 
-### Variance Profile
+#### Variance Profile
 
 The following plot shows the **total variance** of the trajectory and how it is **distributed** along the different **eigenvectors**. **Variance** appears in Å² and **eigenvectors** are shown according to **eigenvalues** descending order, the first one being the **most important** one and the last that with the **lower contribution to variance**. This graph indicates the **size of the flexibility space** (the higher the variance, the higher the flexibility) and how it is distributed in different **modes**.
 
@@ -928,7 +949,7 @@ plotly.offline.iplot(fig)
 
 <img src='_static/plot1.png'></img>
 
-### Dimensionality/Quality Profile
+#### Dimensionality/Quality Profile
 
 The following plot shows the **percentage** of **explained variance** for a given number of **eigenvectors** (quality) and the **dimensionality** of the sampled space. This graph indicates the **complexity of the flexibility space**, i.e. how many **modes** are necessary to explain the **entire flexibility** of the protein. 
 
@@ -957,7 +978,8 @@ plotly.offline.iplot(fig)
 
 <a id="pca_eigenvectors"></a>
 ***
-## PCAsuite: Eigen Vectors
+
+### PCAsuite: Eigen Vectors
 
 As stated above, the generated set of **eigenvectors** (the modes or the principal components) describe the nature of the **deformation movements** of the protein, whereas the **eigenvalues** indicate the **stiffness** associated to every **mode**. Inspection of the **atomic components** of **eigenvalues** associated to the most important **eigenvectors** helps to determine the **contribution** of different residues to the **key essential deformations** of the protein.
 
@@ -1029,7 +1051,8 @@ view
 
 <a id="pcz_animate"></a>
 ***
-## PCAsuite: Animate Principal Components
+
+### PCAsuite: Animate Principal Components
 
 **Motions** described by the **eigenvectors** can be visualized by **projecting** the trajectory onto a given **eigenvector** and taking the **2 extreme projections** and **interpolating** between them to create an **animation**. This type of **visualization** is extremely popular as it allows a graphical an easy way to identify the **essential deformation movements** in macromolecules.
 
@@ -1076,7 +1099,8 @@ cpptraj_convert(input_top_path=ca_pdb,
 ```
 
 <a id="vis3D_PCZ_animate"></a>
-### Visualizing trajectory
+
+#### Visualizing trajectory
 Visualizing the **PCA animation** for the **first PCA component** of the **NMA trajectory** using **NGL**: 
 
 
@@ -1091,7 +1115,8 @@ view
 
 <a id="bfactors"></a>
 ***
-## PCAsuite: Bfactor x Principal Components
+
+### PCAsuite: Bfactor x Principal Components
 
 The **B-factor** is the standard measure of **residue/atom flexibility**. It is determined from the **oscillations** of a **residue** with respect to its **equilibrium position**:
 <br><br>
@@ -1261,16 +1286,17 @@ plotly.offline.iplot(fig)
 
 <a id="hinge"></a>
 ***
-## PCAsuite: Hinge points prediction
+
+### PCAsuite: Hinge points prediction
 
 **Hinge point detection** is integrated in the PCA suite to determine residues around which **large protein movements** are organized. Analysis can be performed using **three different methodologies**, each one with its own implementation. The different **hinge point predictors** have been coupled to both **standard** one and **Gaussian RMSd** fits, but the later is recommended.
 
-### B-Factor slope change method
+#### B-Factor slope change method
 This method is based in the analysis of the **B-factors landscape**. The idea exploited is that a protein that has been re-centred using a **Gaussian RMSd** and has a **hinge** will display a **fixed domain** (low B-factors) and a **floppy domain** (large B-factors). This leads to a **B-factors landscape** dominated by low values in the fixed domain and very high values in the floppy domain. **Hinge point** is then located at the region of **sharp slope change**. To avoid discontinuities and reduce noise related to the roughness of the **B-factor** distribution the slopes were computed by averaging numerical values using different window sizes, checking in all cases for coherence (determined from the different windows estimates of the slopes).
 
 The tool labels as **uphill** those detections related to a change **from low to high B-factors** and **downhill** to the others.
 
-### Force constant method
+#### Force constant method
 The method is based on the computation of a **force constant** for each residue, as stated in the paper ***Investigating the Local Flexibility of Functional Residues in Hemoproteins*** ([Sophie Sacquin-Mora and Richard Lavery, 2006](https://doi.org/10.1529/biophysj.105.074997)).
 
 The method computes a **force constant** for each residue that is dependent upon the **distances** between the residues along the trajectory:
@@ -1289,7 +1315,7 @@ Where $d_{ij}$ is the **distance** between residue i and residue j, and $j^{*}$ 
 As stated in the paper, the **peak force constants** will probably correspond to the residues in the **interdomain region**. This means that the **hinge points** are marked by the **peaks in the landscape**.
 
 
-### Dynamic domain detection method
+#### Dynamic domain detection method
 
 This method relies on the proper **clustering** of the residues according to its **correlation**. It is based on the paper ***Probing Protein Mechanics: Residue-Level Properties and Their Use in Defining Domains*** ([Isabelle Navizet, Fabien Cailliez and Richard Lavery, 2004](https://doi.org/10.1529/biophysj.104.042085)).
 
@@ -1416,7 +1442,8 @@ ipywidgets.HBox([view1, view2, view3])
 
 <a id="stiffness"></a>
 ***
-## PCAsuite: Apparent Stiffness
+
+### PCAsuite: Apparent Stiffness
 
 **Stiffness** is defined as the **force-constant** acting between **two residues** in the case of completely disconnected oscillators. It is defined in the **harmonic limit** from the variance in the **inter-residue distance**:
 
@@ -1509,7 +1536,8 @@ plotly.offline.iplot(fig)
 
 <a id="collectivity"></a>
 ***
-## PCAsuite: Collectivity Index
+
+### PCAsuite: Collectivity Index
 
 **Collectivity index** is a numerical measure of **how many atoms are affected by a given mode**. This measure has been taken from a paper by Rafael Brüschweiler, [Collective protein dynamics and nuclear spin relaxation](https://doi.org/10.1063/1.469213).
 
@@ -1590,7 +1618,8 @@ plotly.offline.iplot(fig)
 
 <a id="similarity"></a>
 ***
-## PCAsuite: PCZ similarity
+
+### PCAsuite: PCZ similarity
 
 A **quantitative comparison** of trajectories compressed into two congruent **PCZ-formatted** files can be computed. An example might be the **dynamics** of a protein in the presence and absence of a **ligand**, or a comparative analysis of the dynamics of a **wild-type** protein and a **mutant**. The comparison can be also used to compare the **conformational space** explored by trajectories generated using different methods, such as the ones used in this tutorial (BD, DMD, NMA), or even compare the **CG trajectories** with an **all-atom MD simulation**. 
 
