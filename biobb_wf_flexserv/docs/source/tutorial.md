@@ -225,10 +225,10 @@ view
 ### Brownian Dynamics
 
 The **Brownian Dynamics** (BD) method introduces the protein in an **stochastic bath** that keeps the **temperature constant** and modulates the otherwise extreme oscillations of the residues. This bath is simulated with two terms accounting for a **velocity-dependent friction** and **stochastic forces** due to the **solvent environment**.
-**Velocity Verlet** algorithm is used to solve the **stochastic differential equation** (equation of motion) for **alpha-carbons** ($C\alpha$):<br><br>
+**Velocity Verlet** algorithm is used to solve the **stochastic differential equation** (equation of motion) for **alpha-carbons** ($$C\alpha$$):<br><br>
 
 <center>
-$\large m\dot{\upsilon}_{i} = \gamma\upsilon_{i} + F_{i} + \eta_{i}$  
+$$\large m\dot{\upsilon}_{i} = \gamma\upsilon_{i} + F_{i} + \eta_{i}$$
 </center>
     
     
