@@ -33,7 +33,10 @@ The codes wrapped are the ***FlexServ*** and ***PCAsuite*** tools:
 
 ### Biobb modules used
 
- * [biobb_flexserv](https://github.com/bioexcel/biobb_flexserv): biomolecular flexibility studies on protein 3D structures.
+* [biobb_flexserv](https://github.com/bioexcel/biobb_flexserv): biomolecular flexibility studies on protein 3D structures.
+* [biobb_io](https://github.com/bioexcel/biobb_io): Tools to fetch biomolecular data from public databases.
+* [biobb_structure_utils](https://github.com/bioexcel/biobb_structure_utils): Tools to modify or extract information from a PDB structure.
+* [biobb_analysis](https://github.com/bioexcel/biobb_analysis): Tools to analyse Molecular Dynamics trajectories.
 
 ### Auxiliar libraries used
 
