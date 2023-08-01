@@ -3,16 +3,15 @@ channels:
   - conda-forge
   - bioconda
 dependencies:
-  - biobb_flexserv==4.0.0
+  - biobb_flexserv==4.0.3
   - biobb_io==4.0.0
   - biobb_structure_utils==4.0.0
-  - biobb_analysis==4.0.0
+  - biobb_analysis==4.0.2
   - nb_conda_kernels
   - ipywidgets==7.6.6
   - jupyter_client==7.3.2
   - tornado==6.1
   - nb_conda_kernels
-  - importlib_metadata
   - jupyter_contrib_nbextensions
   - plotly
   - nglview

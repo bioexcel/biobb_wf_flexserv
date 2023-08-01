@@ -1,12 +1,12 @@
-name: biobb_wf_flexserv_tutorial
+name: biobb_wf_flexserv
 channels:
   - conda-forge
   - bioconda
 dependencies:
-  - biobb_flexserv==4.0.1
+  - biobb_flexserv==4.0.3
   - biobb_io==4.0.0
   - biobb_structure_utils==4.0.0
-  - biobb_analysis==4.0.0
+  - biobb_analysis==4.0.2
   - nb_conda_kernels
   - ipywidgets==7.6.6
   - jupyter_client==7.3.2
