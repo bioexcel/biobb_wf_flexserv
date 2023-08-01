@@ -130,7 +130,7 @@ i) **Brownian dynamics** (BD) <br>
 ii) **Discrete dynamics** (DMD)<br>
 iii) **Normal mode analysis** (NMA) based on different types of elastic networks <br>
 
-This tutorial shows how to extract **molecular flexibility** (conformational ensemble) from a single, static structure **downloaded** from the **PDB database**, generating its **coarse-grained**, reduced representation ($C_{\alpha}$) and running the previously mentioned **coarse-grained algorithms**.
+This tutorial shows how to extract **molecular flexibility** (conformational ensemble) from a single, static structure **downloaded** from the **PDB database**, generating its **coarse-grained**, reduced representation (\\(C_{\alpha}\\)) and running the previously mentioned **coarse-grained algorithms**.
 
 <a id="fetch"></a>
 ***
@@ -232,40 +232,40 @@ $$\large m\dot{\upsilon}_{i} = \gamma\upsilon_{i} + F_{i} + \eta_{i}$$
 </center>
     
     
-where **m** stands for the **effective mass** of **$C\alpha$** (see below), $\upsilon$ and $\dot{\upsilon}$ stands for velocity and acceleration, **F** represent the force, $\gamma$ is the inverse of a characteristic **time at which the particle loses its energy in a given solvent**, and finally the **random term** is considered a Robust white noise $\eta(t)$ with autocorrelation given by:<br><br>
+where **m** stands for the **effective mass** of **\\(C\alpha\\)** (see below), \\(\upsilon\\) and \\(\dot{\upsilon}\\) stands for velocity and acceleration, **F** represent the force, \\(\gamma\\) is the inverse of a characteristic **time at which the particle loses its energy in a given solvent**, and finally the **random term** is considered a Robust white noise \\(\eta(t)\\) with autocorrelation given by:<br><br>
 
 <center>
-$\large \langle \eta_{l} (t) \space \eta_{n} (t^{\prime}) \rangle = 2mk_{B}T\gamma\delta_{ln}\delta(t - t^{\prime})$
+$$\large \langle \eta_{l} (t) \space \eta_{n} (t^{\prime}) \rangle = 2mk_{B}T\gamma\delta_{ln}\delta(t - t^{\prime})$$
 </center>
    
    
-where **$k_{B}$** is the **Boltzmann constant**, and **t** is the **temperature of the stochastic bath**. The **Dirac functions** $\delta_{ln}$ and $\delta(t - t^{\prime})$ force the **independence of the components of the noise vector**.
+where **\\(k_{B}\\)** is the **Boltzmann constant**, and **t** is the **temperature of the stochastic bath**. The **Dirac functions** \\(\delta_{ln}\\) and \\(\delta(t - t^{\prime})\\) force the **independence of the components of the noise vector**.
 
 The **equation of motion** is integrated using **Verlet’s algorithm**, giving for the **velocities** and **positions** after time:<br><br>
 
 <center>
-$\large \vec{v}_{i} = e^{-\frac{\Delta t}{\tau}} \vec{v}_{i}^{0} + \frac{1}{\gamma} \left(1 - e^{-\frac{\Delta t}{\tau}} \right) \vec{F}_{i}^{0} + \Delta \vec{v}_{i}^{G}$
+$$\large \vec{v}_{i} = e^{-\frac{\Delta t}{\tau}} \vec{v}_{i}^{0} + \frac{1}{\gamma} \left(1 - e^{-\frac{\Delta t}{\tau}} \right) \vec{F}_{i}^{0} + \Delta \vec{v}_{i}^{G}$$
 </center>
    
 and <br><br>
 
 <center>
-$\large \vec{r}_{i} = \vec{r}_{i}^{0} + \tau \left( 1 - e^{-\frac {\Delta t} {\tau}} \right) \vec{v}_{i}^{0} + \frac {\Delta t} {\gamma} \left( 1 - \frac {\tau} {\Delta t} \left( 1 - e^{-\frac{\Delta t}{\tau}}  \right) \right) \vec{F_{i}} + \Delta \vec{r}_{i}^{G} $
+$$\large \vec{r}_{i} = \vec{r}_{i}^{0} + \tau \left( 1 - e^{-\frac {\Delta t} {\tau}} \right) \vec{v}_{i}^{0} + \frac {\Delta t} {\gamma} \left( 1 - \frac {\tau} {\Delta t} \left( 1 - e^{-\frac{\Delta t}{\tau}}  \right) \right) \vec{F_{i}} + \Delta \vec{r}_{i}^{G} $$
 </center>
 
-where $\tau = m \gamma^{-1}$ is the **characteristic time**, and $\Delta \vec{r}_{i}^{G}$, $\Delta \vec{v}_{i}^{G}$  are the **changes** in **position** and **velocity** induced by the **stochastic term**.
+where \\(\tau = m \gamma^{-1}\\) is the **characteristic time**, and \\(\Delta \vec{r}_{i}^{G}\\), \\(\Delta \vec{v}_{i}^{G}\\)  are the **changes** in **position** and **velocity** induced by the **stochastic term**.
 
-The **potential energy** used to compute **forces** in the **equation of motion** assumes a **coarse-grained representation of the protein** ($C\alpha$-only) and a **quasi-harmonic representation** of the **interactions** (similar to that suggested by [Kovacs et al. 2004](https://doi.org/10.1002/prot.20151)):<br><br>
+The **potential energy** used to compute **forces** in the **equation of motion** assumes a **coarse-grained representation of the protein** (\\(C\alpha\\)-only) and a **quasi-harmonic representation** of the **interactions** (similar to that suggested by [Kovacs et al. 2004](https://doi.org/10.1002/prot.20151)):<br><br>
 
 
 <center>
-$\large U_{ij} = \frac {1} {2} C \left( \frac{r^{*}}{|{\vec{r}_{ij}^{0}}|} \right)^{6} \left(\vec{r}_{ij} - \vec{r}_{ij}^{0} \right)^{2}$
+$$\large U_{ij} = \frac {1} {2} C \left( \frac{r^{*}}{|{\vec{r}_{ij}^{0}}|} \right)^{6} \left(\vec{r}_{ij} - \vec{r}_{ij}^{0} \right)^{2}$$
 </center>
 
 
-where $r_{ij} = r_{i} - r_{j}$ stands for the vector connecting $C\alpha$ atoms i and j.
+where \\(r_{ij} = r_{i} - r_{j}\\) stands for the vector connecting \\(C\alpha\\) atoms i and j.
 
-The initial condition is a **native structure** (or MD-averaged conformation) that is supposed to be in the **minimal energy state**, from which the **relative vectors** $\vec{r}_{ij}^{0}$ are computed. After some tests, factor **C** is taken to be **40 kcal/mol Å²** and **r***, being the **mean distance** between two consecutive **$C\alpha$ atoms**, is set to **3.8Å**. The **mass** of all $C\alpha$ atoms is set to **100 daltons** (i.e, that of an average residue). The **velocity-dependent friction** $\gamma$ is considered to have the same value as for water (i.e., 0.4 ps-1). Brownian Dynamics (BD) **simulation time scales** were equivalent to those considered in Molecular Dynamics (MD).
+The initial condition is a **native structure** (or MD-averaged conformation) that is supposed to be in the **minimal energy state**, from which the **relative vectors** \\(\vec{r}_{ij}^{0}\\) are computed. After some tests, factor **C** is taken to be **40 kcal/mol Å²** and **r***, being the **mean distance** between two consecutive **\\(C\alpha\\) atoms**, is set to **3.8Å**. The **mass** of all \\(C\alpha\\) atoms is set to **100 daltons** (i.e, that of an average residue). The **velocity-dependent friction** \\(\gamma\\) is considered to have the same value as for water (i.e., 0.4 ps-1). Brownian Dynamics (BD) **simulation time scales** were equivalent to those considered in Molecular Dynamics (MD).
 
 
 Reference: <br>
@@ -358,67 +358,67 @@ view
 
 ### Discrete Molecular Dynamics
 
-With the **Discrete Molecular Dynamics** (DMD) method, the proteins are modelled as a system of beads ($C\alpha$ atoms) interacting through a **discontinuous potential** (square wells in the used tool). Outside the discontinuities, **potentials** are considered constant, thereby implying a **ballistic regime** for the particles (**constant potential, constant velocity**) in all conditions, except at such time as when the particles reach a **potential discontinuity** (this is called “an **event**” or “a **collision**”). At this time, the **velocities** of the colliding particles are modified by imposing **conservation of the linear momentum**, **angular momentum**, and **total energy**. Since the particles were constrained to move within a configurational space where the **potential energy** is constant (**infinite square wells**), the **kinetic energy** remains unchanged and therefore all collisions are assumed to be **elastic**.
+With the **Discrete Molecular Dynamics** (DMD) method, the proteins are modelled as a system of beads (\\(C\alpha\\) atoms) interacting through a **discontinuous potential** (square wells in the used tool). Outside the discontinuities, **potentials** are considered constant, thereby implying a **ballistic regime** for the particles (**constant potential, constant velocity**) in all conditions, except at such time as when the particles reach a **potential discontinuity** (this is called “an **event**” or “a **collision**”). At this time, the **velocities** of the colliding particles are modified by imposing **conservation of the linear momentum**, **angular momentum**, and **total energy**. Since the particles were constrained to move within a configurational space where the **potential energy** is constant (**infinite square wells**), the **kinetic energy** remains unchanged and therefore all collisions are assumed to be **elastic**.
 
 **DMD** has a major advantage over techniques like **MD** because, as it does not require the **integration of the equations of motion** at fixed **time steps**, the calculation progresses **from event to event**. In practice, the time between events decreases with **temperature** and **density** and depends on the **number of particles
-N** approximately as $N^{-\frac{1}{2}}$. The **equation of motion**, corresponding to **constant velocity**, is solved analytically: <br><br>
+N** approximately as \\(N^{-\frac{1}{2}}\\). The **equation of motion**, corresponding to **constant velocity**, is solved analytically: <br><br>
 
 <center>
-$\large \vec{r_{i}}(t + t_{c}) = \vec{r_{i}} (t) +  \vec{v_{i}}(t) \space t_{c}$
+$$\large \vec{r_{i}}(t + t_{c}) = \vec{r_{i}} (t) +  \vec{v_{i}}(t) \space t_{c}$$
 </center>
 
-where $t_{c}$ is the **minimum** amongst the **collision times** $t_{ij}$ between each **pair of particles** i and j, given by: <br><br>
+where \\(t_{c}\\) is the **minimum** amongst the **collision times** \\(t_{ij}\\) between each **pair of particles** i and j, given by: <br><br>
 
 <center>
-$\large t_{ij} = \frac{-b_{ij} \pm \sqrt{b_{ij}^{2} - v_{ij}^{2}\left (r_{ij}^{2} - d^{2} \right)}}{v_{ij}^{2}} $
+$$\large t_{ij} = \frac{-b_{ij} \pm \sqrt{b_{ij}^{2} - v_{ij}^{2}\left (r_{ij}^{2} - d^{2} \right)}}{v_{ij}^{2}} $$
 </center>
 
-where $r_{ij}$ is the square modulus of $\vec{r_{ij}}=\vec{r_j}-\vec{r_i}$, $\nu_{ij}$ is the square modulus of  $\vec{\nu_{ij}}=\vec{\nu_j}-\vec{\nu_i}$, $b_{ij}=\vec{r_{ij}}\cdot\vec{\nu_{ij}}$, and d is the distance corresponding to a **discontinuity** in the **potential** (the signs + and - before the radical are used for particles approaching one another and moving apart, respectively).
+where \\(r_{ij}\\) is the square modulus of \\(\vec{r_{ij}}=\vec{r_j}-\vec{r_i}\\), \\(\nu_{ij}\\) is the square modulus of  \\(\vec{\nu_{ij}}=\vec{\nu_j}-\vec{\nu_i}\\), \\(b_{ij}=\vec{r_{ij}}\cdot\vec{\nu_{ij}}\\), and d is the distance corresponding to a **discontinuity** in the **potential** (the signs + and - before the radical are used for particles approaching one another and moving apart, respectively).
 
 As the **integration of Newton’s equations** is no longer the rate limiting step, calculations can be extended for very **long simulation** periods and **large systems**, provided an efficient algorithm for **predicting collisions** is used.
 
-The **collision between particles** i and j is associated with a **transfer of linear momentum** in the direction of the vector $\vec{r_{ij}}$. Thus, <br><br>
+The **collision between particles** i and j is associated with a **transfer of linear momentum** in the direction of the vector \\(\vec{r_{ij}}\\). Thus, <br><br>
 
 <center>
-$\large m_{i}\vec{v_{i}} = m_{i}\vec{v_{i}^{\prime}} + \Delta \vec{p}$ 
+$$\large m_{i}\vec{v_{i}} = m_{i}\vec{v_{i}^{\prime}} + \Delta \vec{p}$$ 
 </center>
 
 <center>
-$\large m_{j}\vec{v_{j}} + \Delta \vec{p} = m_{j}\vec{v_{j}^{\prime}}$ 
+$$\large m_{j}\vec{v_{j}} + \Delta \vec{p} = m_{j}\vec{v_{j}^{\prime}}$$
 </center>
 
 where the **prime indices** variables **after the event**.
 
-To calculate the **change in velocities**, the **velocity** of each **particle** is projected in the **direction of the vector** $\vec{r_{ij}}$ so that the **conservation equations** become one-dimensional along the **interatomic coordinate**. <br><br>
+To calculate the **change in velocities**, the **velocity** of each **particle** is projected in the **direction of the vector** \\(\vec{r_{ij}}\\) so that the **conservation equations** become one-dimensional along the **interatomic coordinate**. <br><br>
 
 <center>
-$\large m_{i}v_{i} = m_{i}v_{i}^{\prime} + \Delta p$ 
+$$\large m_{i}v_{i} = m_{i}v_{i}^{\prime} + \Delta p$$ 
 </center>
 
 <center>
-$\large m_{j}v_{j} + \Delta p = m_{j}v_{j}^{\prime}$ 
+$$\large m_{j}v_{j} + \Delta p = m_{j}v_{j}^{\prime}$$
 </center>
 
 which implies
 
 <center>
-$\large m_{i}v_{i} +  m_{j}v_{j} = m_{i}v_{i}^{\prime} + m_{j}v_{j}^{\prime}$ 
+$$\large m_{i}v_{i} +  m_{j}v_{j} = m_{i}v_{i}^{\prime} + m_{j}v_{j}^{\prime}$$ 
 </center>
 
 <center>
-$\large \frac{1}{2} m_{i}v_{i}^{2} + \frac{1}{2} m_{j}v_{j}^{2} = \frac{1}{2} m_{i}v_{i}^{\prime 2} + \frac{1}{2} m_{j}v_{j}^{\prime 2}$ 
+$$\large \frac{1}{2} m_{i}v_{i}^{2} + \frac{1}{2} m_{j}v_{j}^{2} = \frac{1}{2} m_{i}v_{i}^{\prime 2} + \frac{1}{2} m_{j}v_{j}^{\prime 2}$$ 
 </center>
 
 From the previous 4 equations, the **transferred momentum** is readily determined as:
 <br><br>
 
 <center>
-$\large \Delta p = \large \frac{2m_{i}m_{j}}{m_{i}+m_{j}} (v_{i} - v_{j})$ 
+$$\large \Delta p = \large \frac{2m_{i}m_{j}}{m_{i}+m_{j}} (v_{i} - v_{j})$$ 
 </center>
 
-and the final **velocities** of **particles** i and j are determined through the previous equations $ m_{i}\vec{v_{i}}$ and $ m_{j}\vec{v_{j}} + \Delta \vec{p}$.
+and the final **velocities** of **particles** i and j are determined through the previous equations \\(m_{i}\vec{v_{i}}\\) and \\( m_{j}\vec{v_{j}} + \Delta \vec{p}\\).
 
-The **interaction potentials** are defined as **infinite square wells**, such that the **particle-particle distances** vary between $d_{min}=(1-σ)r_{ij}^{0}$ and $d_{max}=(1+σ)r_{ij}^{0}$, $r_{ij}^{0}$ being the **distance in the native conformation** and 2σ the **width of the square well**. The **MD-averaged conformation** is taken as the **native conformation**. **Residue-residue interaction potentials** are defined only for the **particles** at a distance smaller than a **cut-off radius** $r_{c}$ in the native conformation. Otherwise the **particles** only interact via a hardcore **repulsive potential** that avoids **steric clashes**. For **non-consecutive $C\alpha$ particles**, $r_{c} = 8 Å$ and σ = 0.1 were used, while for **consecutive pairs of residues** a **smaller well width** (σ = 0.05) was chosen to keep the **Cα – Cα distances** closer to the expected value (3.8 Å).
+The **interaction potentials** are defined as **infinite square wells**, such that the **particle-particle distances** vary between \\(d_{min}=(1-σ)r_{ij}^{0}\\) and \\(d_{max}=(1+σ)r_{ij}^{0}\\), \\(r_{ij}^{0}\\) being the **distance in the native conformation** and 2σ the **width of the square well**. The **MD-averaged conformation** is taken as the **native conformation**. **Residue-residue interaction potentials** are defined only for the **particles** at a distance smaller than a **cut-off radius** \\(r_{c}\\) in the native conformation. Otherwise the **particles** only interact via a hardcore **repulsive potential** that avoids **steric clashes**. For **non-consecutive \\(C\alpha\\) particles**, \\(r_{c} = 8 Å\\) and σ = 0.1 were used, while for **consecutive pairs of residues** a **smaller well width** (σ = 0.05) was chosen to keep the **Cα – Cα distances** closer to the expected value (3.8 Å).
 
 ***
 **Building Blocks** used:
@@ -498,44 +498,44 @@ view
 
 **Normal Mode Analysis** (NMA) can be defined as the **multidimensional** treatment of **coupled oscillators** from the analysis of **force-derivatives** in **equilibrium conformations**. This methodology assumes that the **displacement** of an **atom** from its **equilibrium position** is small and that the **potential energy** in the vicinity of the **equilibrium position** can be approximated as a **sum of terms** that are **quadratic** in the **atomic displacements**. In its purest form, it uses the same **all-atom force field** from a **MD simulation**, implying a prior **in vacuo minimization** ([Go and Scheraga 1976](https://pubs.acs.org/cgi-bin/abstract.cgi/mamobx/1976/9/i04/f-pdf/f_ma60052a001.pdf?sessid=6006l3); [Brooks III, Karplus et al. 1987](https://adsabs.harvard.edu/abs/1990PhT....43b.120B)). 
 
-[Tirion (1996)](https://link.aps.org/doi/10.1103/PhysRevLett.77.1905) proposed a **simplified model** where the **interaction** between two atoms was described by **Hookean pairwise potential** where the distances are taken to be at the minimum, avoiding the minimization (referred as **Elastic Network Model** -ENM-). This idea being further extended to use **coarse-grained** ($C\alpha$) protein representation by several research groups, as in the **Gaussian Network Model** -GNM- ([Bahar et al. 1997](https://linkinghub.elsevier.com/retrieve/pii/S1359027897000242); [Haliloglu et al. 1997](https://link.aps.org/doi/10.1103/PhysRevLett.79.3090)). The **GNM model** was later extended to a 3-D, vectorial **Anisotropic Network Model** -ANM-, which is the formalism implemented in the **FlexServ server** and the **BioBB FlexServ module** ([Atilgan et al. 2001](https://www.biophysj.org/cgi/content/abstract/80/1/505)). Through the **diagonalization** of the **hessian matrix**, the **ANM** provides **eigenvalues** and **eigenvectors** that not only describe the **frequencies** and **shapes** of the **normal modes**, but also their **directions**.
+[Tirion (1996)](https://link.aps.org/doi/10.1103/PhysRevLett.77.1905) proposed a **simplified model** where the **interaction** between two atoms was described by **Hookean pairwise potential** where the distances are taken to be at the minimum, avoiding the minimization (referred as **Elastic Network Model** -ENM-). This idea being further extended to use **coarse-grained** (\\(C\alpha\\)) protein representation by several research groups, as in the **Gaussian Network Model** -GNM- ([Bahar et al. 1997](https://linkinghub.elsevier.com/retrieve/pii/S1359027897000242); [Haliloglu et al. 1997](https://link.aps.org/doi/10.1103/PhysRevLett.79.3090)). The **GNM model** was later extended to a 3-D, vectorial **Anisotropic Network Model** -ANM-, which is the formalism implemented in the **FlexServ server** and the **BioBB FlexServ module** ([Atilgan et al. 2001](https://www.biophysj.org/cgi/content/abstract/80/1/505)). Through the **diagonalization** of the **hessian matrix**, the **ANM** provides **eigenvalues** and **eigenvectors** that not only describe the **frequencies** and **shapes** of the **normal modes**, but also their **directions**.
 
-Within the **Elastic Network Model** approach (ENM) the network topology is described by a **Kirchhoff matrix** Γ of **inter-atomic contacts** where the ij-th element is equal to -1 if nodes (i.e. $C\alpha$) i and j are within the cutoff distance $r_{c}$, and zero otherwise, and the **diagonal elements** (ii-th) are equal to the **connectivity of the residue**:
+Within the **Elastic Network Model** approach (ENM) the network topology is described by a **Kirchhoff matrix** Γ of **inter-atomic contacts** where the ij-th element is equal to -1 if nodes (i.e. \\(C\alpha\\)) i and j are within the cutoff distance \\(r_{c}$, and zero otherwise, and the **diagonal elements** (ii-th) are equal to the **connectivity of the residue**:
 
 <center>
-$\large \Gamma_{ii} = - \sum\limits_{k|k\neq i}^{N} \Gamma_{ik}$
+$$\large \Gamma_{ii} = - \sum\limits_{k|k\neq i}^{N} \Gamma_{ik}$$
 </center>
 
 In the **ANM approach**, the **potential energy** between two residues i-j is given by:
 <br><br>
 
 <center>
-$\large E = 0.5 · \gamma · \Gamma_{ij} (r_{ij} - r_{ij}^{0})^{2}$
+$$\large E = 0.5 · \gamma · \Gamma_{ij} (r_{ij} - r_{ij}^{0})^{2}$$
 </center>
 
-where $r_{ij}$ and $r_{ij}^{0}$ are the **instantaneous** and **reference** (equilibrium) **position vectors** of atoms i and j and γ is the **force constant**; in the original formalism by Atilgan et al, γ=1 kcal/mol.Å² (see below).
+where \\(r_{ij}\\) and \\(r_{ij}^{0}\\) are the **instantaneous** and **reference** (equilibrium) **position vectors** of atoms i and j and γ is the **force constant**; in the original formalism by Atilgan et al, γ=1 kcal/mol.Å² (see below).
 
-For the sake of simplicity, the product of the **force constant** for a given i, j pair $γ_{ij}$ and the corresponding **Kirchhoff matrix** element $Γ_{ij}$ can be expresed as a single **stiffness constant** $K_{ij}$:
+For the sake of simplicity, the product of the **force constant** for a given i, j pair \\(γ_{ij}\\) and the corresponding **Kirchhoff matrix** element \\(Γ_{ij}\\) can be expresed as a single **stiffness constant** \\(K_{ij}\\):
 
 <center>
-$\large K_{ij} = 0.5 · \gamma · \Gamma_{ij}$
+$$\large K_{ij} = 0.5 · \gamma · \Gamma_{ij}$$
 </center>
 
 The **molecular Hamiltonian** is given by the **elastic energy** to displace a protein from its **equilibrium conformation**:
 <br><br>
 
 <center>
-$\large E_{ij} = \sum\limits_{i\neq j} K_{ij} (r_{ij} - r_{ij}^{0})^{2}$
+$$\large E_{ij} = \sum\limits_{i\neq j} K_{ij} (r_{ij} - r_{ij}^{0})^{2}$$
 </center>
 
-This **potential function** is used to build a **Hessian matrix** (H), a **3N x 3N matrix** (N is the **number of nodes** in the protein) defined as N x N submatrices $H_{ij}$ containing the **second derivatives** of the **energy respect the coordinates** of each protein node. **Diagonalization** of the **Hessian** yields the **eigenvectors** (the essential deformation modes) and the associated **eigenvalues** (stiffness constants).
+This **potential function** is used to build a **Hessian matrix** (H), a **3N x 3N matrix** (N is the **number of nodes** in the protein) defined as N x N submatrices \\(H_{ij}\\) containing the **second derivatives** of the **energy respect the coordinates** of each protein node. **Diagonalization** of the **Hessian** yields the **eigenvectors** (the essential deformation modes) and the associated **eigenvalues** (stiffness constants).
 
-As presented, **NMA** defines **springs** between all pairs of residues with no zero elements in the corresponding **Kirchhoff matrix** element $Γ_{ij}$. In principle all **inter-residue force-constants** have then two possible values: 0 if the residues are not connected (Kirchhoff matrix element equal to 0) and γ otherwise. The standard approach (Tirion 1996) defines the **connectivity index** by using an **spherical cutoff** $r_{c}$:
+As presented, **NMA** defines **springs** between all pairs of residues with no zero elements in the corresponding **Kirchhoff matrix** element \\(Γ_{ij}\\). In principle all **inter-residue force-constants** have then two possible values: 0 if the residues are not connected (Kirchhoff matrix element equal to 0) and γ otherwise. The standard approach (Tirion 1996) defines the **connectivity index** by using an **spherical cutoff** \\(r_{c}\\):
 <br><br>
 
 <center>
-$\large \Gamma_{ij} = -1$ if $\large r_{ij}^{0} \le r_{c}$ <br>
-$\large \Gamma_{ij} = 0$ otherwise
+$$\large \Gamma_{ij} = -1$$ if $$\large r_{ij}^{0} \le r_{c}$$ <br>
+$$\large \Gamma_{ij} = 0$$ otherwise
 </center>
 
 **Cutoff distances** around 8-12 Å have been used, being the most usual the range 8-9 Angstroms, although some authors have explored values as high as 20-25 Å (Sen & Jernigan, 2006). Different **cut-off radii** can be used for different proteins based on **size**, **shape**, **density** or other **protein characteristics**.
@@ -546,45 +546,45 @@ This approximation, with **interactions** defined by an uniform γ within a **cu
 <br><br>
 
 <center>
-$\large K_{ij} = C \left ( \frac {r^{*}} {r_{ij}^{0}} \right)^{6} + as_{ij}$
+$$\large K_{ij} = C \left ( \frac {r^{*}} {r_{ij}^{0}} \right)^{6} + as_{ij}$$
 </center>
 
-where C is a **stiffness constant** (taken as 40 kcal/mol Å²), r* is a **fitted constant**, taken as the mean $C\alpha - C\alpha$ **distance** between consecutive residues (3.8 Angstroms), $r_{ij}^{0}$ is the **equilibrium distance** between the $C\alpha$ of residues i and j and $as_{ij}$ is an **inter residue-residue constant surface**. In practice, the **surface correction** is small and has been ignored in our implementation of the method, available in the **FlexServ server** and **BioBB FlexServ module** as an alternative to standard **cutoff-based** method. This method maintains the simplicity of the original method and avoids the problems intrinsic to the use of a **.cutoff**. The major drawback is that, by connecting all residues in the network, both increases the **rigidity** of the system and lowers the **speed of the computation**.
+where C is a **stiffness constant** (taken as 40 kcal/mol Å²), r* is a **fitted constant**, taken as the mean \\(C\alpha - C\alpha\\) **distance** between consecutive residues (3.8 Angstroms), \\(r_{ij}^{0}\\) is the **equilibrium distance** between the \\(C\alpha\\) of residues i and j and \\(as_{ij}\\) is an **inter residue-residue constant surface**. In practice, the **surface correction** is small and has been ignored in our implementation of the method, available in the **FlexServ server** and **BioBB FlexServ module** as an alternative to standard **cutoff-based** method. This method maintains the simplicity of the original method and avoids the problems intrinsic to the use of a **.cutoff**. The major drawback is that, by connecting all residues in the network, both increases the **rigidity** of the system and lowers the **speed of the computation**.
 
-The **cutoff-based** and **Kovac’s** versions of **NMA** were improved with **multi-parametric fitting** of **NMA** to **atomistic MD simulations** in a large number of proteins (CITE!!  Orellana et al., **to be published**). The refined method, which is available in the **FlexServ server** and the **BioBB FlexServ module**, defines a **network topology** by an effective **Kirchhoff matrix** Γ that is the sum of a **Rouse Chain topology matrix** for the first 3 neighbours, with a usual **Kirchhoff matrix** for **distant interactions**, rendering a mixed **connectivity matrix** that combines both **sequential** and **distant information**. Thus, given a pair of residues i, and j with sequential distance $S_{ij}>0$ and **Cartesian distance** $r_{ij}$, the ij-th element of the **inter-residue contact matrix** is defined as:
+The **cutoff-based** and **Kovac’s** versions of **NMA** were improved with **multi-parametric fitting** of **NMA** to **atomistic MD simulations** in a large number of proteins (CITE!!  Orellana et al., **to be published**). The refined method, which is available in the **FlexServ server** and the **BioBB FlexServ module**, defines a **network topology** by an effective **Kirchhoff matrix** Γ that is the sum of a **Rouse Chain topology matrix** for the first 3 neighbours, with a usual **Kirchhoff matrix** for **distant interactions**, rendering a mixed **connectivity matrix** that combines both **sequential** and **distant information**. Thus, given a pair of residues i, and j with sequential distance \\(S_{ij}>0\\) and **Cartesian distance** \\(r_{ij}\\), the ij-th element of the **inter-residue contact matrix** is defined as:
 <br><br>
 
 <center>
-$\Gamma_{ij}=\left\{\begin{matrix}\space S_{ij}<3 & \Gamma_{ij}=-1 \\ S_{ij}>3 & 
+$$\Gamma_{ij}=\left\{\begin{matrix}\space S_{ij}<3 & \Gamma_{ij}=-1 \\ S_{ij}>3 & 
 \left\{\begin{matrix} \Gamma_{ij}=-1 & if r_{ij}^0 \leq r_{c} \\ \Gamma_{ij}=0 & otherwise \end{matrix} \right\} 
-\end{matrix}\right\}$
+\end{matrix}\right\}$$
 </center>
 
-The **distance** (both in Cartesian and Sequence space) dependence of the **force-constant**, and the associated **scaling factors** $C_{cart}$ and $C_{seq}$ were adjusted to reproduce **atomistic MD simulations** ($C_{seq}$=60 kcal/mol.Å² and $C_{cart}$=6 kcal/mol.Å², lower or higher values can be considered for extremely small or large systems). The same **fitting procedure** was followed to obtain a **size-dependent cutoff distance** ($r_{c}$), that can be approximated with a **logarithmic function** of the protein length, with extreme values of 8 and 16 Angstroms for most proteins (up to 17-20 Angstroms for extremely large proteins, above 700 residues). Thus the **MD-ANM** mixed model combines an **MD calibrated inverse exponential function** with a **length-dependent cutoff** to discard **redundant interactions**, also improving **computational efficency**. The resulting network gives flexibility patterns closest to MD, being not only the **eigenvectors**, but also the **eigenvalues** more physically meaningful.
+The **distance** (both in Cartesian and Sequence space) dependence of the **force-constant**, and the associated **scaling factors** \\(C_{cart}\\) and \\(C_{seq}\\) were adjusted to reproduce **atomistic MD simulations** (\\(C_{seq}\\)=60 kcal/mol.Å² and \\(C_{cart}\\)=6 kcal/mol.Å², lower or higher values can be considered for extremely small or large systems). The same **fitting procedure** was followed to obtain a **size-dependent cutoff distance** (\\(r_{c}\\)), that can be approximated with a **logarithmic function** of the protein length, with extreme values of 8 and 16 Angstroms for most proteins (up to 17-20 Angstroms for extremely large proteins, above 700 residues). Thus the **MD-ANM** mixed model combines an **MD calibrated inverse exponential function** with a **length-dependent cutoff** to discard **redundant interactions**, also improving **computational efficency**. The resulting network gives flexibility patterns closest to MD, being not only the **eigenvectors**, but also the **eigenvalues** more physically meaningful.
 
 Our **FlexServ server** and **BioBB FlexServ module** implement the **ANM** formalism with the three different definitions of the **force constants** described above:
 
 - The so called **linear** or **distance-cutoff** formalism, equal to the original **ANM** but with a default γ=10 kcal/mol.Å² for the **ANM linear implementation** as in [elNémo](http://www.sciences.univ-nantes.fr/elnemo/) ([Suhre & Sanejouand](https://doi.org/10.1093/nar/gkh368) (2004)). The default **cutoff value** in this case is 8Å, or 9Å for larger proteins (above 150-200 residues).
 
 
-- The **Kovacs**, **inverse exponential** formalism, in which the **force constant** is defined by a **continuous function**; the default values of C=40 kcal/mol Å², and $r_{ij}^{0}=3.8 Å$ is used; $as_{ij}$ term is neglected.
+- The **Kovacs**, **inverse exponential** formalism, in which the **force constant** is defined by a **continuous function**; the default values of C=40 kcal/mol Å², and \\(r_{ij}^{0}=3.8 Å\\) is used; \\(as_{ij}\\) term is neglected.
 
 
-- The **Mixed** formalism, in which the **force constant** follows a complex definition with all parameters ($r_{c}$, $C_{cart}$ and $C_{cont}$) fitted according to **MD simulations** as explained before:
+- The **Mixed** formalism, in which the **force constant** follows a complex definition with all parameters (\\(r_{c}$, \\(C_{cart}\\) and \\(C_{cont}\\)) fitted according to **MD simulations** as explained before:
 
 <center>
-$K_{ij}=\left\{\begin{matrix} S_{ij}\leq 3 & K_{ij}=\frac{C_{seq}}{S_{ij}^2}\space \\ S_{ij}>3 & 
+$$K_{ij}=\left\{\begin{matrix} S_{ij}\leq 3 & K_{ij}=\frac{C_{seq}}{S_{ij}^2}\space \\ S_{ij}>3 & 
 \left\{\begin{matrix}K_{ij}=\left(\frac{C_{cart}}{r_{ij}^0}\right)^6 & if r_{ij}^0\leq r_{c} \\ K_{ij}=0 & otherwise \end{matrix}\right)
-\end{matrix}\right\}$
+\end{matrix}\right\}$$
 </center>
 
 Once **NMA** is performed and the set of **eigenvectors/eigenvalues** is determined, ***Cartesian pseudo-trajectories*** at **physiologic temperature** can be obtained by activating **normal mode deformations** using a **Metropolis Monte Carlo algorithm** with a **Hamiltonian** defined as shown above. The **displacements** obtained by such algorithm can then be projected to the **Cartesian space** to generate the ***pseudo-trajectories***. Note that by limiting the size of the sum in the **molecular hamiltonian equation** to only important **eigenvectors** (m’<n), the **trajectory** can be enriched in sampling of **essential deformation modes** ([Rueda et al. 2007a](https://linkinghub.elsevier.com/retrieve/pii/S0969212607001414)).
 
 <center>
-$\large E = \sum \limits_{i=1}^{m^{\prime}} K_{i}\Delta D_{i}^{2}$
+$$\large E = \sum \limits_{i=1}^{m^{\prime}} K_{i}\Delta D_{i}^{2}$$
 </center>
 
-where $K_i=\frac{k_BT}{2\lambda}$ (λ being the eigenvalue in distance² units) and $\Delta D_{i}$ is the displacement along the mode.
+where \\(K_i=\frac{k_BT}{2\lambda}\\) (λ being the eigenvalue in distance² units) and \\(\Delta D_{i}\\) is the displacement along the mode.
 
 ***
 **Building Blocks** used:
@@ -1122,10 +1122,10 @@ The **B-factor** is the standard measure of **residue/atom flexibility**. It is 
 <br><br>
 
 <center>
-$\large B_{factor} = \frac {8}{3} \pi^{2} \langle \Delta r^{2}\rangle $
+$$\large B_{factor} = \frac {8}{3} \pi^{2} \langle \Delta r^{2}\rangle $$
 </center>
 
-where $\langle \Delta r^{2} \rangle$ stands for the **oscillations of residues** around **equilibrium positions**.
+where \\(\langle \Delta r^{2} \rangle\\) stands for the **oscillations of residues** around **equilibrium positions**.
 
 **B-factor** profiles represent the distribution of residue **harmonic oscillations**. They can be compared with **X-ray data**, but caution is needed, since crystal **lattice effects** tend to **rigidify** exposed protein residues. Very large **B-factors** should be taken with caution since indicate very **flexible residues** that might display **conformational changes** along the trajectory, which is difficult to follow within the **harmonic approximation** implicit to **B-factor** analysis.
 
@@ -1303,14 +1303,14 @@ The method computes a **force constant** for each residue that is dependent upon
 <br><br>
 
 <center>
-$\large k_{i} = \frac {1} {\langle (d_{i} - \langle d_{i} \rangle)^{2}\rangle}$
+$$\large k_{i} = \frac {1} {\langle (d_{i} - \langle d_{i} \rangle)^{2}\rangle}$$
 </center>
 <br><br>
 <center>
-$\large d_{i} = \langle d_{ij} \rangle_{j*}$
+$$\large d_{i} = \langle d_{ij} \rangle_{j*}$$
 </center>
 
-Where $d_{ij}$ is the **distance** between residue i and residue j, and $j^{*}$ refers to all the residues except j, j-1  and j+1.
+Where \\(d_{ij}\\) is the **distance** between residue i and residue j, and \\(j^{*}\\) refers to all the residues except j, j-1  and j+1.
 
 As stated in the paper, the **peak force constants** will probably correspond to the residues in the **interdomain region**. This means that the **hinge points** are marked by the **peaks in the landscape**.
 
@@ -1448,7 +1448,7 @@ ipywidgets.HBox([view1, view2, view3])
 **Stiffness** is defined as the **force-constant** acting between **two residues** in the case of completely disconnected oscillators. It is defined in the **harmonic limit** from the variance in the **inter-residue distance**:
 
 <center>
-$\Large K_{ij}^{app}= \frac{K_{b}T}{\langle{(R_{ij}-\langle{R_{ij}}\rangle)^{2}\rangle}}$
+$$\Large K_{ij}^{app}= \frac{K_{b}T}{\langle{(R_{ij}-\langle{R_{ij}}\rangle)^{2}\rangle}}$$
 </center>
 
 where **Kb** is the **Boltzman’s constant** and **T** is the **temperature**. The **averages** are computed using trajectory **ensembles** (e.g. DMD, BD or NMA-based simulations).
@@ -1545,17 +1545,17 @@ The formula that defines this measure is:
 
 <br>
 <center>
-$\Large{\kappa_{i}}=\frac{1}{N}exp\left\{-\sum \limits _{n=1}^{N} u_{i,n} ^{2}\space log\space {u_{i,n} ^{2}}\right\}$
+$$\Large{\kappa_{i}}=\frac{1}{N}exp\left\{-\sum \limits _{n=1}^{N} u_{i,n} ^{2}\space log\space {u_{i,n} ^{2}}\right\}$$
 </center>
 <br><br>
 <center>
-$\Large u_{i,n} ^{2} = \alpha \frac{Q_{i,3n-2} ^{2} \space + \space  Q_{i,3n-1} ^{2} \space + \space Q_{i,3n} ^{2}}{m_{n}}$
+$$\Large u_{i,n} ^{2} = \alpha \frac{Q_{i,3n-2} ^{2} \space + \space  Q_{i,3n-1} ^{2} \space + \space Q_{i,3n} ^{2}}{m_{n}}$$
 </center>
 <br>
 
-**N** is the **number of atoms**, **Q** is the **eigenvector**, $\alpha$ is a value used to **normalize the eigenvector**.
+**N** is the **number of atoms**, **Q** is the **eigenvector**, \\(\alpha\\) is a value used to **normalize the eigenvector**.
 
-High values for $\kappa{_i}$ means that the corresponding **eigenvector** affects **many of the atoms**, while lower values means that the **eigenvector** has a more **local behaviour**.
+High values for \\(\kappa{_i}\\) means that the corresponding **eigenvector** affects **many of the atoms**, while lower values means that the **eigenvector** has a more **local behaviour**.
 
 The **pcz_collectivity** building block returns the **collectivity index** of the **macromolecule** associated to a given **eigenvector**. 
 
@@ -1627,19 +1627,19 @@ The main **eigenvectors** can be used to check how similar two different traject
 <br><br>
 
 <center>
-$\large \gamma_{AB} = \frac {1} {n} \sum \limits_{j=1}^{n} \sum \limits_{i=1}^{n} {(v_{i}^{A} · v_{j}^{B})^{2}}$    
+$$\large \gamma_{AB} = \frac {1} {n} \sum \limits_{j=1}^{n} \sum \limits_{i=1}^{n} {(v_{i}^{A} · v_{j}^{B})^{2}}$$    
 </center>
 
 <br>
 
-where $γ_{AB}$ is the **similarity index** between **trajectories A and B**, n is the number of **eigenvectors** needed to represent the 80-90% of the **total system variance** and $v_{i}^{A}$ and $v_{j}^{B}$ are the corresponding **eigenvectors** for **A and B**. Resulting **zero value** corresponds to **orthogonal** motions between **trajectories** while on the other hand, **unity values** correspond to **high degree** of **overlap** or **similarity**.
+where \\(γ_{AB}\\) is the **similarity index** between **trajectories A and B**, n is the number of **eigenvectors** needed to represent the 80-90% of the **total system variance** and \\(v_{i}^{A}\\) and \\(v_{j}^{B}\\) are the corresponding **eigenvectors** for **A and B**. Resulting **zero value** corresponds to **orthogonal** motions between **trajectories** while on the other hand, **unity values** correspond to **high degree** of **overlap** or **similarity**.
 
 The **Root Mean Square Inner Product** (RMSIP) adds a square root to the previous equation, and is typically used to measure the similarity of the **N principal components** of the **covariance/correlation matrices**:
 
 <br><br>
 
 <center>
-$\large {RMSIP} = \sqrt {\frac { \sum \limits_{j=1}^{n} \sum \limits_{i=1}^{n} {(v_{i}^{A} · v_{j}^{B})^{2}} } {N} }$ 
+$$\large {RMSIP} = \sqrt {\frac { \sum \limits_{j=1}^{n} \sum \limits_{i=1}^{n} {(v_{i}^{A} · v_{j}^{B})^{2}} } {N} }$$ 
 </center>
 
 <br><br>
@@ -1652,19 +1652,19 @@ The **Root Weighted Square Inner Product** (RWSIP) includes the **eigenvalues** 
 <br><br>
 
 <center>
-$\large {RWSIP} = \sqrt {\frac { \sum \limits_{j=1}^{n} \sum \limits_{i=1}^{n} {\lambda_{i}^{A} · \lambda_{j}^{B} (v_{i}^{A} · v_{j}^{B})^{2}} } {\sum \limits_{i=1}^{n} {\lambda_{i}^{A} · \lambda_{i}^{B} }} }$    
+$$\large {RWSIP} = \sqrt {\frac { \sum \limits_{j=1}^{n} \sum \limits_{i=1}^{n} {\lambda_{i}^{A} · \lambda_{j}^{B} (v_{i}^{A} · v_{j}^{B})^{2}} } {\sum \limits_{i=1}^{n} {\lambda_{i}^{A} · \lambda_{i}^{B} }} }$$    
 </center>
 
 <br><br>
 
-where $λ_{i}^{A}$ is the **eigenvalue** associated to the **eigenvector** i with unit vector $v_{i}^{A}$. 
+where \\(λ_{i}^{A}\\) is the **eigenvalue** associated to the **eigenvector** i with unit vector \\(v_{i}^{A}\\). 
 
-*Alberto Perez et al. (2005)* introduced yet another method, including the **relative importance** of the different **eigenvectors** in explaining **trajectory variance**, extending this concept to all (or the *important* set of) **eigenvectors** and the subsequent **normalization** considering the **energy distribution** of the sets of **eigenvectors** $v_{i}^{A}$ and $v_{j}^{B}$. The **Weighted Cross Product** is calculated as:
+*Alberto Perez et al. (2005)* introduced yet another method, including the **relative importance** of the different **eigenvectors** in explaining **trajectory variance**, extending this concept to all (or the *important* set of) **eigenvectors** and the subsequent **normalization** considering the **energy distribution** of the sets of **eigenvectors** \\(v_{i}^{A}\\) and \\(v_{j}^{B}\\). The **Weighted Cross Product** is calculated as:
 
 <br><br>
 
 <center>
-$\large \xi_{AB} = \frac 
+$$\large \xi_{AB} = \frac 
 {2 \sum \limits_{i=1}^{i=z} \sum \limits_{j=1}^{j=z} \left(
 {\left( v_{i}^{A} · v_{j}^{B} \right) \frac
 { exp \space \left[{ - \frac{(\Delta x)^{2}}{\lambda_{i}^{A}} - \frac{(\Delta x)^{2}}{\lambda_{j}^{B}} }\right]  } 
@@ -1685,13 +1685,13 @@ $\large \xi_{AB} = \frac
 { \left( \sum \limits_{j=1}^{j=z} {exp \space \left[{ - \frac{(\Delta x)^{2}}{\lambda_{j}^{B}}  }\right]} \right)^{2}}
 \right)^{2}}
 } 
-$    
+$$    
 </center>
 <br><br>
 
 The method assumes that the molecule moves sampling states defined by a **common displacement (Δx)** (*Amplifying factor*) along the different **eigenvectors**. Thus, the **weight** of each **eigenvector** in defining the **flexibility space** will be given by its **Boltzman factor** computed from the **harmonic energy penalty**. The sum can be calculated for all (z=m) or for a number of eigenvectors (z=n).
 
-All these **similarity indexes** (***Similarity Index ($\gamma_{AB}$)***, ***RMSIP***, ***RWSIP*** and ***WCP***) are implemented in the **pcz_similarity** building block.
+All these **similarity indexes** (***Similarity Index (\\(\gamma_{AB}\\))***, ***RMSIP***, ***RWSIP*** and ***WCP***) are implemented in the **pcz_similarity** building block.
 
 References:
 
