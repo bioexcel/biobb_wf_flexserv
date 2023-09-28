@@ -8,16 +8,9 @@ dependencies:
   - biobb_io==4.1.0
   - biobb_structure_utils==4.1.0
   - biobb_analysis==4.1.0
-  - nb_conda_kernels
   - ipywidgets==7.6.6
   - jupyter_client==7.3.2
-  - tornado==6.1
-  - nb_conda_kernels
-  - importlib_metadata
-  - traitlets==5.9.0
-  - jupyter_contrib_nbextensions
+  #- traitlets==5.9.0
   - plotly
   - nglview
   - simpletraj
-  - conda
-
