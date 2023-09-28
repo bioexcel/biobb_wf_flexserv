@@ -75,7 +75,7 @@ jupyter-notebook biobb_wf_flexserv/notebooks/biobb_wf_flexserv.ipynb
 
 Click here to [view tutorial in Read the Docs](https://biobb-wf-flexserv.readthedocs.io/en/latest/tutorial.html)
 
-Click here to [execute tutorial in Binder](https://bioexcel-binder.tsi.ebi.ac.uk/v2/gh/bioexcel/biobb_wf_flexserv/main?filepath=biobb_wf_flexserv%2Fnotebooks%2Fbiobb_wf_flexserv.ipynb)
+Click here to [execute tutorial in Binder](https://mybinder.org/v2/gh/bioexcel/biobb_wf_flexserv/HEAD?labpath=biobb_wf_flexserv%2Fnotebooks%2Fbiobb_wf_flexserv.ipynb)
 
 ***
 
