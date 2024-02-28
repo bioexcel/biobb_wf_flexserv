@@ -16,3 +16,5 @@ biobb_wf_flexserv/notebooks/*.out
 biobb_wf_flexserv/notebooks/*.gif
 biobb_wf_flexserv/notebooks/*.web.ipynb
 biobb_wf_flexserv/notebooks/*.docs.ipynb
+biobb_wf_flexserv/docs/notebooks/
+biobb_wf_flexserv/html/biobb_wf_flexserv.web.ipynb
