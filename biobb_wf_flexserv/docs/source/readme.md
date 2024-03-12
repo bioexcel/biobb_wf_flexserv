@@ -38,7 +38,7 @@ The codes wrapped are the ***FlexServ*** and ***PCAsuite*** tools:
 * [biobb_structure_utils](https://github.com/bioexcel/biobb_structure_utils): Tools to modify or extract information from a PDB structure.
 * [biobb_analysis](https://github.com/bioexcel/biobb_analysis): Tools to analyse Molecular Dynamics trajectories.
 
-### Auxiliar libraries used
+### Auxiliary libraries used
 
 * [jupyter](https://jupyter.org/): Free software, open standards, and web services for interactive computing across all programming languages.
 * [plotly](https://plot.ly/python/offline/): Python interactive graphing library integrated in Jupyter notebooks.

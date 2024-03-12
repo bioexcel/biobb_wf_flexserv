@@ -35,7 +35,7 @@ The codes wrapped are the ***FlexServ*** and ***PCAsuite*** tools:
  - [biobb_structure_utils](https://github.com/bioexcel/biobb_structure_utils): Tools to modify or extract information from a PDB structure.
  - [biobb_analysis](https://github.com/bioexcel/biobb_analysis): Tools to analyse Molecular Dynamics trajectories.
   
-### Auxiliar libraries used
+### Auxiliary libraries used
 
 * [jupyter](https://jupyter.org/): Free software, open standards, and web services for interactive computing across all programming languages.
 * [plotly](https://plot.ly/python/offline/): Python interactive graphing library integrated in Jupyter notebooks.
@@ -108,7 +108,7 @@ jupyter-notebook biobb_wf_flexserv/notebooks/biobb_wf_flexserv.ipynb
 ## Input parameters
 **Input parameters** needed:
 
- - **Auxiliar libraries**: Libraries to be used in the workflow are imported once at the beginning
+ - **Auxiliary libraries**: Libraries to be used in the workflow are imported once at the beginning
 <br><br>
  - **pdbCode**: PDB code of the protein structure (e.g. 1A32, [https://doi.org/10.2210/pdb1A32/pdb](https://doi.org/10.2210/pdb1A32/pdb))
  - **md_pcz**: PCZ file for the compressed 10-ns MD trajectory of the 1A32 protein taken from the [MoDEL](https://mmb.irbbarcelona.org/MoDEL/) database 
