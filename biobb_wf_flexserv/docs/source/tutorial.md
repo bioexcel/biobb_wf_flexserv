@@ -4,9 +4,9 @@
 ***
 This tutorial aims to illustrate the process of generating **protein conformational ensembles** from **3D structures** and analysing its **molecular flexibility**, step by step, using the **BioExcel Building Blocks library (biobb)**. 
 
-The notebook reproduces the **workflow** integrated in the **[FlexServ](https://mmb.irbbarcelona.org/FlexServ/)** web-based tool for the **analysis** of **protein flexibility**. The **workflow** incorporates powerful protocols for the **coarse-grained** determination of **protein dynamics** using different versions of **Normal Mode Analysis (NMA)**, **Brownian dynamics (BD)** and **Discrete Dynamics (DMD)**. It also includes a set of **flexibility analyses** using a large variety of metrics, including basic **geometrical analysis**, **B-factors**, **essential dynamics**, **stiffness analysis**, **collectivity measures**, **Lindemann’s indexes**, **residue correlation**, **chain-correlations**, **dynamic domain determination**, **hinge point detections**, etc. Data is represented using **NGL 3D-structure visualizer** and **Plotly 2D plots**.
+The notebook reproduces the **workflow** integrated in the **[FlexServ](https://mmb.irbbarcelona.org/FlexServ/)** web-based tool for the **analysis** of **protein flexibility**. The **workflow** incorporates powerful protocols for the **coarse-grained** determination of **protein dynamics** using different versions of **Normal Mode Analysis (NMA)**, **Brownian dynamics (BD)** and **Discrete Molecular Dynamics (DMD)**. It also includes a set of **flexibility analyses** using a large variety of metrics, including basic **geometrical analysis**, **B-factors**, **essential dynamics**, **stiffness analysis**, **collectivity measures**, **Lindemann’s indexes**, **residue correlation**, **chain-correlations**, **dynamic domain determination**, **hinge point detections**, etc. Data is represented using **NGL 3D-structure visualizer** and **Plotly 2D plots**.
 
-The particular structure used is the **Ribosomal Protein S15 from Bacillus Stearothermophilus** (PDB code [1A32](https://www.rcsb.org/structure/1A32), [https://doi.org/10.2210/pdb1A32/pdb](https://doi.org/10.2210/pdb1A32/pdb)).
+The particular structure used is the **Ribosomal Protein S15 from Bacillus stearothermophilus** (PDB code [1A32](https://www.rcsb.org/structure/1A32), [https://doi.org/10.2210/pdb1A32/pdb](https://doi.org/10.2210/pdb1A32/pdb)).
 
 The codes wrapped are the ***FlexServ*** and ***PCAsuite*** tools:
 
@@ -138,7 +138,7 @@ Despite recent advances in **experimental techniques**, the study of **molecular
 **FlexServ** webserver and associated **BioBB module** integrate three **coarse-grained** algorithms for the representation of **protein flexibility**: 
 
 i) **Brownian dynamics** (BD) <br>
-ii) **Discrete dynamics** (DMD)<br>
+ii) **Discrete molecular dynamics** (DMD)<br>
 iii) **Normal mode analysis** (NMA) based on different types of elastic networks <br>
 
 This tutorial shows how to extract **molecular flexibility** (conformational ensemble) from a single, static structure **downloaded** from the **PDB database**, generating its **coarse-grained**, reduced representation (\\(C_{\alpha}\\)) and running the previously mentioned **coarse-grained algorithms**.

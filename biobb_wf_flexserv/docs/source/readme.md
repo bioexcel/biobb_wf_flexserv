@@ -8,9 +8,9 @@ Based on the FlexServ server: [https://mmb.irbbarcelona.org/FlexServ/](https://m
 
 This tutorial aims to illustrate the process of generating **protein conformational ensembles** from **3D structures** and analysing its **molecular flexibility**, step by step, using the **BioExcel Building Blocks library (biobb)**.
 
-The notebook reproduces the workflow integrated in the **FlexServ** web-based tool for the analysis of **protein flexibility**. The workflow incorporates powerful protocols for the **coarse-grained** determination of **protein dynamics** using different versions of **Normal Mode Analysis (NMA)**, **Brownian dynamics (BD)** and **Discrete Dynamics (DMD)**. It also includes a set of **flexibility analyses** using a large variety of metrics, including basic geometrical analysis, B-factors, essential dynamics, stiffness analysis, collectivity measures, Lindemann’s indexes, dynamic domain determination, hinge point detections, etc. Data is represented using NGL 3D-structure visualizer and Plotly 2D plots.
+The notebook reproduces the workflow integrated in the **FlexServ** web-based tool for the analysis of **protein flexibility**. The workflow incorporates powerful protocols for the **coarse-grained** determination of **protein dynamics** using different versions of **Normal Mode Analysis (NMA)**, **Brownian dynamics (BD)** and **Discrete Molecular Dynamics (DMD)**. It also includes a set of **flexibility analyses** using a large variety of metrics, including basic geometrical analysis, B-factors, essential dynamics, stiffness analysis, collectivity measures, Lindemann’s indexes, dynamic domain determination, hinge point detections, etc. Data is represented using NGL 3D-structure visualizer and Plotly 2D plots.
 
-The particular structure used is the **Ribosomal Protein S15 from Bacillus Stearothermophilus** (PDB code [1A32](https://www.rcsb.org/structure/1A32)).
+The particular structure used is the **Ribosomal Protein S15 from Bacillus stearothermophilus** (PDB code [1A32](https://www.rcsb.org/structure/1A32)).
 
 The codes wrapped are the ***FlexServ*** and ***PCAsuite*** tools:
 
