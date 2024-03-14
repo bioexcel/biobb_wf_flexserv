@@ -1,7 +1,8 @@
 {
   "@context": "http://schema.org",
-  "name": "Macromolecular Flexibility workflow",
+  "@id": "https://github.com/bioexcel/biobb_wf_flexserv",
   "@type": "ItemList",
+  "name": "Macromolecular Flexibility workflow",
   "itemListElement": [
     {
       "@type": "SoftwareApplication",
