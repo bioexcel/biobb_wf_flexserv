@@ -9,5 +9,6 @@ dependencies:
   - biobb_analysis==4.1.0
   - jupyter
   - plotly
-  - nglview
+  - nglview==3.0.8
+  - ipywidgets=7.7.2
   - simpletraj
