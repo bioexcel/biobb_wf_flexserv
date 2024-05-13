@@ -44,24 +44,10 @@ The codes wrapped are the ***FlexServ*** and ***PCAsuite*** tools:
 
 ### Conda Installation and Launch
 
-Take into account that, for this specific workflow, there are two environment files, one for linux OS and the other for mac OS:
-
-#### linux
-
 ```console
 git clone https://github.com/bioexcel/biobb_wf_flexserv.git
 cd biobb_wf_flexserv
-conda env create -f conda_env/environment.linux.yml
-conda activate biobb_wf_flexserv
-jupyter-notebook biobb_wf_flexserv/notebooks/biobb_wf_flexserv.ipynb
-``` 
-
-#### macos
-
-```console
-git clone https://github.com/bioexcel/biobb_wf_flexserv.git
-cd biobb_wf_flexserv
-conda env create -f conda_env/environment.macos.yml
+conda env create -f conda_env/environment.yml
 conda activate biobb_wf_flexserv
 jupyter-notebook biobb_wf_flexserv/notebooks/biobb_wf_flexserv.ipynb
 ``` 
