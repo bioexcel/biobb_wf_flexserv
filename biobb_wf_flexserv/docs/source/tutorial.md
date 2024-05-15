@@ -1,5 +1,5 @@
 # Protein structure flexibility tutorial using BioExcel Building Blocks (biobb) and FlexServ tools
-**Based on the FlexServ server: [https://mmb.irbbarcelona.org/FlexServ/](https://mmb.irbbarcelona.org/FlexServ/)**
+### Based on the FlexServ server: https://mmb.irbbarcelona.org/FlexServ/
 
 ***
 This tutorial aims to illustrate the process of generating **protein conformational ensembles** from **3D structures** and analysing its **molecular flexibility**, step by step, using the **BioExcel Building Blocks library (biobb)**. 
@@ -12,17 +12,17 @@ The codes wrapped are the ***FlexServ*** and ***PCAsuite*** tools:
 
 **FlexServ: an integrated tool for the analysis of protein flexibility.**<br>
 *Bioinformatics, Volume 25, Issue 13, 1 July 2009, Pages 1709–1710.*<br>
-*Available at: [https://doi.org/10.1093/bioinformatics/btp304](https://doi.org/10.1093/bioinformatics/btp304)*
+*Available at: https://doi.org/10.1093/bioinformatics/btp304*
 
-**PCA suite**: [https://mmb.irbbarcelona.org/software/pcasuite/](https://mmb.irbbarcelona.org/software/pcasuite/)
+**PCA suite**: https://mmb.irbbarcelona.org/software/pcasuite/
 
 **Essential Dynamics:  A Tool for Efficient Trajectory Compression and Management.**<br>
 *J. Chem. Theory Comput. 2006, 2, 2, 251–258*<br>
-*Available at: [https://doi.org/10.1021/ct050285b](https://doi.org/10.1021/ct050285b)*
+*Available at: https://doi.org/10.1021/ct050285b*
 
 **pyPcazip: A PCA-based toolkit for compression and analysis of molecular simulation data.**<br>
 *SoftwareX, Volume 5, 2016, Pages 44-50*<br>
-*Available at: [https://doi.org/10.1016/j.softx.2016.04.002](https://doi.org/10.1016/j.softx.2016.04.002)*
+*Available at: https://doi.org/10.1016/j.softx.2016.04.002*
 
 ***
 
@@ -90,6 +90,50 @@ jupyter-notebook biobb_wf_flexserv/notebooks/biobb_wf_flexserv.ipynb
 
 ***
 
+## Initializing colab
+The two cells below are used only in case this notebook is executed via **Google Colab**. Take into account that, for running conda on **Google Colab**, the **condacolab** library must be installed. As [explained here](https://pypi.org/project/condacolab/), the installation requires a **kernel restart**, so when running this notebook in **Google Colab**, don't run all cells until this **installation** is properly **finished** and the **kernel** has **restarted**.
+
+
+```python
+# Only executed when using google colab
+import sys
+if 'google.colab' in sys.modules:
+  import subprocess
+  from pathlib import Path
+  try:
+    subprocess.run(["conda", "-V"], check=True)
+  except FileNotFoundError:
+    subprocess.run([sys.executable, "-m", "pip", "install", "condacolab"], check=True)
+    import condacolab
+    condacolab.install()
+    # Clone repository
+    repo_URL = "https://github.com/bioexcel/biobb_wf_flexserv.git"
+    repo_name = Path(repo_URL).name.split('.')[0]
+    if not Path(repo_name).exists():
+      subprocess.run(["mamba", "install", "-y", "git"], check=True)
+      subprocess.run(["git", "clone", repo_URL], check=True)
+      print("⏬ Repository properly cloned.")
+    # Install environment
+    print("⏳ Creating environment...")
+    env_file_path = f"{repo_name}/conda_env/environment.yml"
+    subprocess.run(["mamba", "env", "update", "-n", "base", "-f", env_file_path], check=True)
+    print("🎨 Install NGLView dependencies...")
+    subprocess.run(["mamba", "install", "-y", "-c", "conda-forge", "nglview==3.0.8", "ipywidgets=7.7.2"], check=True)
+    print("👍 Conda environment successfully created and updated.")
+```
+
+
+```python
+# Enable widgets for colab
+if 'google.colab' in sys.modules:
+  from google.colab import output
+  output.enable_custom_widget_manager()
+  # Change working dir
+  import os
+  os.chdir("biobb_wf_flexserv/biobb_wf_flexserv/notebooks")
+  print(f"📂 New working directory: {os.getcwd()}")
+```
+
 <a id="input"></a>
 ## Input parameters
 **Input parameters** needed:
@@ -116,7 +160,6 @@ md_pcz = "Files/1a32.MoDEL.pcz"
 
 <a id="intro"></a>
 ***
-
 ## Molecular Flexibility Representation/Generation
 
 Despite recent advances in **experimental techniques**, the study of **molecular flexibility** is mostly a task for **theoretical methods**. The most powerful of them is **atomistic molecular dynamics** (MD), a rigorous method with solid physical foundations, which provides accurate representations of **protein flexibility** under **physiological-like environments**. Unfortunately, despite its power, MD is a **complex technique**, **computationally expensive** and their use requires a certain **degree of expertise**. The alternative to **atomistic MD** is the use of **coarse-grained** methods coupled to **simple potentials**. By using these techniques we assume a **lost of atomic detail** to gain formal and **computational simplicity** in the representation of near-native state **flexibility** of proteins. Unfortunately, despite its power, the practical use of coarse-grained methods is still limited, due mostly to the lack of **standardized protocols** for analysis and the existence of a myriad of different algorithms distributed in different websites.
@@ -127,11 +170,10 @@ i) **Brownian dynamics** (BD) <br>
 ii) **Discrete molecular dynamics** (DMD)<br>
 iii) **Normal mode analysis** (NMA) based on different types of elastic networks <br>
 
-This tutorial shows how to extract **molecular flexibility** (conformational ensemble) from a single, static structure **downloaded** from the **PDB database**, generating its **coarse-grained**, reduced representation (\\(C_{\alpha}\\)) and running the previously mentioned **coarse-grained algorithms**.
+This tutorial shows how to extract **molecular flexibility** (conformational ensemble) from a single, static structure **downloaded** from the **PDB database**, generating its **coarse-grained**, reduced representation ($C_{\alpha}$) and running the previously mentioned **coarse-grained algorithms**.
 
 <a id="fetch"></a>
 ***
-
 ### Fetching PDB structure
 Downloading **PDB structure** with the **protein molecule** from the RCSB PDB database.<br>
 Alternatively, a **PDB file** can be used as starting structure. <br>
@@ -159,7 +201,6 @@ pdb(output_pdb_path=downloaded_pdb,
 ```
 
 <a id="vis3D"></a>
-
 #### Visualizing 3D structure
 Visualizing the downloaded/given **PDB structure** using **NGL**: 
 
@@ -167,7 +208,7 @@ Visualizing the downloaded/given **PDB structure** using **NGL**:
 ```python
 # Show protein
 view = nglview.show_structure_file(downloaded_pdb)
-view.add_representation(repr_type='ball+stick', selection='allb')
+view.add_representation(repr_type='ball+stick', selection='all')
 view._remote_call('setSize', target='Widget', args=['','600px'])
 view
 ```
@@ -176,7 +217,6 @@ view
 
 <a id="coarse-grain"></a>
 ***
-
 ### Generate Coarse Grain Structure
 Extracting the **alpha carbons** from the **protein structure** to generate a reduced, **coarse grain structure**. This structure is the one used by the different **FlexServ ensemble generators** (BD, DMD, NMA).<br> <br>
 ***
@@ -200,7 +240,6 @@ extract_atoms(input_structure_path=downloaded_pdb,
 ```
 
 <a id="vis3D_CA"></a>
-
 #### Visualizing 3D structure
 Visualizing the CA-only **PDB structure** using **NGL**: 
 
@@ -218,57 +257,56 @@ view
 
 <a id="bd"></a>
 ***
-
 ### Brownian Dynamics
 
 The **Brownian Dynamics** (BD) method introduces the protein in an **stochastic bath** that keeps the **temperature constant** and modulates the otherwise extreme oscillations of the residues. This bath is simulated with two terms accounting for a **velocity-dependent friction** and **stochastic forces** due to the **solvent environment**.
-**Velocity Verlet** algorithm is used to solve the **stochastic differential equation** (equation of motion) for **alpha-carbons** (\\(C\alpha)\\):<br><br>
+**Velocity Verlet** algorithm is used to solve the **stochastic differential equation** (equation of motion) for **alpha-carbons** ($C\alpha$):<br><br>
 
 <center>
-$$\large m\dot{\upsilon}_{i} = \gamma\upsilon_{i} + F_{i} + \eta_{i}$$
+$\large m\dot{\upsilon}_{i} = \gamma\upsilon_{i} + F_{i} + \eta_{i}$  
 </center>
     
     
-where **m** stands for the **effective mass** of **\\(C\alpha\\)** (see below), \\(\upsilon\\) and \\(\dot{\upsilon}\\) stands for velocity and acceleration, **F** represent the force, \\(\gamma\\) is the inverse of a characteristic **time at which the particle loses its energy in a given solvent**, and finally the **random term** is considered a Robust white noise \\(\eta(t)\\) with autocorrelation given by:<br><br>
+where **m** stands for the **effective mass** of **$C\alpha$** (see below), $\upsilon$ and $\dot{\upsilon}$ stands for velocity and acceleration, **F** represent the force, $\gamma$ is the inverse of a characteristic **time at which the particle loses its energy in a given solvent**, and finally the **random term** is considered a Robust white noise $\eta(t)$ with autocorrelation given by:<br><br>
 
 <center>
-$$\large \langle \eta_{l} (t) \space \eta_{n} (t^{\prime}) \rangle = 2mk_{B}T\gamma\delta_{ln}\delta(t - t^{\prime})$$
+$\large \langle \eta_{l} (t) \space \eta_{n} (t^{\prime}) \rangle = 2mk_{B}T\gamma\delta_{ln}\delta(t - t^{\prime})$
 </center>
    
    
-where **\\(k_{B}\\)** is the **Boltzmann constant**, and **t** is the **temperature of the stochastic bath**. The **Dirac functions** \\(\delta_{ln}\\) and \\(\delta(t - t^{\prime})\\) force the **independence of the components of the noise vector**.
+where **$k_{B}$** is the **Boltzmann constant**, and **t** is the **temperature of the stochastic bath**. The **Dirac functions** $\delta_{ln}$ and $\delta(t - t^{\prime})$ force the **independence of the components of the noise vector**.
 
 The **equation of motion** is integrated using **Verlet’s algorithm**, giving for the **velocities** and **positions** after time:<br><br>
 
 <center>
-$$\large \vec{v}_{i} = e^{-\frac{\Delta t}{\tau}} \vec{v}_{i}^{0} + \frac{1}{\gamma} \left(1 - e^{-\frac{\Delta t}{\tau}} \right) \vec{F}_{i}^{0} + \Delta \vec{v}_{i}^{G}$$
+$\large \vec{v}_{i} = e^{-\frac{\Delta t}{\tau}} \vec{v}_{i}^{0} + \frac{1}{\gamma} \left(1 - e^{-\frac{\Delta t}{\tau}} \right) \vec{F}_{i}^{0} + \Delta \vec{v}_{i}^{G}$
 </center>
    
 and <br><br>
 
 <center>
-$$\large \vec{r}_{i} = \vec{r}_{i}^{0} + \tau \left( 1 - e^{-\frac {\Delta t} {\tau}} \right) \vec{v}_{i}^{0} + \frac {\Delta t} {\gamma} \left( 1 - \frac {\tau} {\Delta t} \left( 1 - e^{-\frac{\Delta t}{\tau}}  \right) \right) \vec{F_{i}} + \Delta \vec{r}_{i}^{G} $$
+$\large \vec{r}_{i} = \vec{r}_{i}^{0} + \tau \left( 1 - e^{-\frac {\Delta t} {\tau}} \right) \vec{v}_{i}^{0} + \frac {\Delta t} {\gamma} \left( 1 - \frac {\tau} {\Delta t} \left( 1 - e^{-\frac{\Delta t}{\tau}}  \right) \right) \vec{F_{i}} + \Delta \vec{r}_{i}^{G} $
 </center>
 
-where \\(\tau = m \gamma^{-1}\\) is the **characteristic time**, and \\(\Delta \vec{r}_{i}^{G}\\), \\(\Delta \vec{v}_{i}^{G}\\)  are the **changes** in **position** and **velocity** induced by the **stochastic term**.
+where $\tau = m \gamma^{-1}$ is the **characteristic time**, and $\Delta \vec{r}_{i}^{G}$, $\Delta \vec{v}_{i}^{G}$  are the **changes** in **position** and **velocity** induced by the **stochastic term**.
 
-The **potential energy** used to compute **forces** in the **equation of motion** assumes a **coarse-grained representation of the protein** (\\(C\alpha\\)-only) and a **quasi-harmonic representation** of the **interactions** (similar to that suggested by [Kovacs et al. 2004](https://doi.org/10.1002/prot.20151)):<br><br>
+The **potential energy** used to compute **forces** in the **equation of motion** assumes a **coarse-grained representation of the protein** ($C\alpha$-only) and a **quasi-harmonic representation** of the **interactions** (similar to that suggested by [Kovacs et al. 2004](https://doi.org/10.1002/prot.20151)):<br><br>
 
 
 <center>
-$$\large U_{ij} = \frac {1} {2} C \left( \frac{r^{*}}{|{\vec{r}_{ij}^{0}}|} \right)^{6} \left(\vec{r}_{ij} - \vec{r}_{ij}^{0} \right)^{2}$$
+$\large U_{ij} = \frac {1} {2} C \left( \frac{r^{*}}{|{\vec{r}_{ij}^{0}}|} \right)^{6} \left(\vec{r}_{ij} - \vec{r}_{ij}^{0} \right)^{2}$
 </center>
 
 
-where \\(r_{ij} = r_{i} - r_{j}\\) stands for the vector connecting \\(C\alpha\\) atoms i and j.
+where $r_{ij} = r_{i} - r_{j}$ stands for the vector connecting $C\alpha$ atoms i and j.
 
-The initial condition is a **native structure** (or MD-averaged conformation) that is supposed to be in the **minimal energy state**, from which the **relative vectors** \\(\vec{r}_{ij}^{0}\\) are computed. After some tests, factor **C** is taken to be **40 kcal/mol Å²** and **r***, being the **mean distance** between two consecutive **\\(C\alpha\\) atoms**, is set to **3.8Å**. The **mass** of all \\(C\alpha\\) atoms is set to **100 daltons** (i.e, that of an average residue). The **velocity-dependent friction** \\(\gamma\\) is considered to have the same value as for water (i.e., 0.4 ps-1). Brownian Dynamics (BD) **simulation time scales** were equivalent to those considered in Molecular Dynamics (MD).
+The initial condition is a **native structure** (or MD-averaged conformation) that is supposed to be in the **minimal energy state**, from which the **relative vectors** $\vec{r}_{ij}^{0}$ are computed. After some tests, factor **C** is taken to be **40 kcal/mol Å²** and **r***, being the **mean distance** between two consecutive **$C\alpha$ atoms**, is set to **3.8Å**. The **mass** of all $C\alpha$ atoms is set to **100 daltons** (i.e, that of an average residue). The **velocity-dependent friction** $\gamma$ is considered to have the same value as for water (i.e., 0.4 ps-1). Brownian Dynamics (BD) **simulation time scales** were equivalent to those considered in Molecular Dynamics (MD).
 
 
 Reference: <br>
 **Exploring the Suitability of Coarse-Grained Techniques for the Representation of Protein Dynamics.**<br>
 *Biophysical Journal, Volume 95, Issue 5, 1 September 2008, Pages 2127-2138*<br>
-*Available at: [https://doi.org/10.1529/biophysj.107.119115](https://doi.org/10.1529/biophysj.107.119115*)*
+*Available at: https://doi.org/10.1529/biophysj.107.119115*
 
 
 ***
@@ -301,11 +339,10 @@ bd_run(
 )
 ```
 
-<a id="bd_dcd"></a>
+<a id="bd_xtc"></a>
 ***
-
-### Fitting and converting BD trajectory to DCD (visualization)
-Fitting and converting the generated **Brownian Dynamics** (BD) **coarse-grained trajectory** from the **mdcrd** format to a **dcd** format, for the sake of visualization with **NGL** (see next cell).<br> <br>
+### Fitting and converting BD trajectory to XTC (visualization)
+Fitting and converting the generated **Brownian Dynamics** (BD) **coarse-grained trajectory** from the **mdcrd** format to a **xtc** format, for the sake of visualization with **NGL** (see next cell).<br> <br>
 ***
 **Building Blocks** used:
  - [cpptraj_rms](https://biobb-analysis.readthedocs.io/en/stable/ambertools.html#module-ambertools.cpptraj_rms) from **biobb_analysis.ambertools.cpptraj_rms**
@@ -316,7 +353,7 @@ Fitting and converting the generated **Brownian Dynamics** (BD) **coarse-grained
 from biobb_analysis.ambertools.cpptraj_rms import cpptraj_rms
 
 bd_rmsd = 'bd_ensemble_rmsd.dat'
-bd_dcd = 'bd_ensemble.dcd'
+bd_xtc = 'bd_ensemble.xtc'
 
 prop = {
     'start': 1,
@@ -329,21 +366,20 @@ prop = {
 cpptraj_rms(input_top_path=ca_pdb,
             input_traj_path=bd_crd,
             output_cpptraj_path=bd_rmsd,
-            output_traj_path=bd_dcd,
+            output_traj_path=bd_xtc,
             input_exp_path= ca_pdb,
             properties=prop)
 
 ```
 
 <a id="vis3D_BD"></a>
-
 #### Visualizing trajectory
 Visualizing the **CG trajectory** using **NGL**: 
 
 
 ```python
 # Show trajectory
-view = nglview.show_simpletraj(nglview.SimpletrajTrajectory(bd_dcd, ca_pdb), gui=True)
+view = nglview.show_simpletraj(nglview.SimpletrajTrajectory(bd_xtc, ca_pdb), gui=True)
 view._remote_call('setSize', target='Widget', args=['','600px'])
 view
 ```
@@ -352,70 +388,69 @@ view
 
 <a id="dmd"></a>
 ***
-
 ### Discrete Molecular Dynamics
 
-With the **Discrete Molecular Dynamics** (DMD) method, the proteins are modelled as a system of beads (\\(C\alpha\\) atoms) interacting through a **discontinuous potential** (square wells in the used tool). Outside the discontinuities, **potentials** are considered constant, thereby implying a **ballistic regime** for the particles (**constant potential, constant velocity**) in all conditions, except at such time as when the particles reach a **potential discontinuity** (this is called “an **event**” or “a **collision**”). At this time, the **velocities** of the colliding particles are modified by imposing **conservation of the linear momentum**, **angular momentum**, and **total energy**. Since the particles were constrained to move within a configurational space where the **potential energy** is constant (**infinite square wells**), the **kinetic energy** remains unchanged and therefore all collisions are assumed to be **elastic**.
+With the **Discrete Molecular Dynamics** (DMD) method, the proteins are modelled as a system of beads ($C\alpha$ atoms) interacting through a **discontinuous potential** (square wells in the used tool). Outside the discontinuities, **potentials** are considered constant, thereby implying a **ballistic regime** for the particles (**constant potential, constant velocity**) in all conditions, except at such time as when the particles reach a **potential discontinuity** (this is called “an **event**” or “a **collision**”). At this time, the **velocities** of the colliding particles are modified by imposing **conservation of the linear momentum**, **angular momentum**, and **total energy**. Since the particles were constrained to move within a configurational space where the **potential energy** is constant (**infinite square wells**), the **kinetic energy** remains unchanged and therefore all collisions are assumed to be **elastic**.
 
 **DMD** has a major advantage over techniques like **MD** because, as it does not require the **integration of the equations of motion** at fixed **time steps**, the calculation progresses **from event to event**. In practice, the time between events decreases with **temperature** and **density** and depends on the **number of particles
-N** approximately as \\(N^{-\frac{1}{2}}\\). The **equation of motion**, corresponding to **constant velocity**, is solved analytically: <br><br>
+N** approximately as $N^{-\frac{1}{2}}$. The **equation of motion**, corresponding to **constant velocity**, is solved analytically: <br><br>
 
 <center>
-$$\large \vec{r_{i}}(t + t_{c}) = \vec{r_{i}} (t) +  \vec{v_{i}}(t) \space t_{c}$$
+$\large \vec{r_{i}}(t + t_{c}) = \vec{r_{i}} (t) +  \vec{v_{i}}(t) \space t_{c}$
 </center>
 
-where \\(t_{c}\\) is the **minimum** amongst the **collision times** \\(t_{ij}\\) between each **pair of particles** i and j, given by: <br><br>
+where $t_{c}$ is the **minimum** amongst the **collision times** $t_{ij}$ between each **pair of particles** i and j, given by: <br><br>
 
 <center>
-$$\large t_{ij} = \frac{-b_{ij} \pm \sqrt{b_{ij}^{2} - v_{ij}^{2}\left (r_{ij}^{2} - d^{2} \right)}}{v_{ij}^{2}} $$
+$\large t_{ij} = \frac{-b_{ij} \pm \sqrt{b_{ij}^{2} - v_{ij}^{2}\left (r_{ij}^{2} - d^{2} \right)}}{v_{ij}^{2}} $
 </center>
 
-where \\(r_{ij}\\) is the square modulus of \\(\vec{r_{ij}}=\vec{r_j}-\vec{r_i}\\), \\(\nu_{ij}\\) is the square modulus of  \\(\vec{\nu_{ij}}=\vec{\nu_j}-\vec{\nu_i}\\), \\(b_{ij}=\vec{r_{ij}}\cdot\vec{\nu_{ij}}\\), and d is the distance corresponding to a **discontinuity** in the **potential** (the signs + and - before the radical are used for particles approaching one another and moving apart, respectively).
+where $r_{ij}$ is the square modulus of $\vec{r_{ij}}=\vec{r_j}-\vec{r_i}$, $\nu_{ij}$ is the square modulus of  $\vec{\nu_{ij}}=\vec{\nu_j}-\vec{\nu_i}$, $b_{ij}=\vec{r_{ij}}\cdot\vec{\nu_{ij}}$, and d is the distance corresponding to a **discontinuity** in the **potential** (the signs + and - before the radical are used for particles approaching one another and moving apart, respectively).
 
 As the **integration of Newton’s equations** is no longer the rate limiting step, calculations can be extended for very **long simulation** periods and **large systems**, provided an efficient algorithm for **predicting collisions** is used.
 
-The **collision between particles** i and j is associated with a **transfer of linear momentum** in the direction of the vector \\(\vec{r_{ij}}\\). Thus, <br><br>
+The **collision between particles** i and j is associated with a **transfer of linear momentum** in the direction of the vector $\vec{r_{ij}}$. Thus, <br><br>
 
 <center>
-$$\large m_{i}\vec{v_{i}} = m_{i}\vec{v_{i}^{\prime}} + \Delta \vec{p}$$ 
+$\large m_{i}\vec{v_{i}} = m_{i}\vec{v_{i}^{\prime}} + \Delta \vec{p}$ 
 </center>
 
 <center>
-$$\large m_{j}\vec{v_{j}} + \Delta \vec{p} = m_{j}\vec{v_{j}^{\prime}}$$
+$\large m_{j}\vec{v_{j}} + \Delta \vec{p} = m_{j}\vec{v_{j}^{\prime}}$ 
 </center>
 
 where the **prime indices** variables **after the event**.
 
-To calculate the **change in velocities**, the **velocity** of each **particle** is projected in the **direction of the vector** \\(\vec{r_{ij}}\\) so that the **conservation equations** become one-dimensional along the **interatomic coordinate**. <br><br>
+To calculate the **change in velocities**, the **velocity** of each **particle** is projected in the **direction of the vector** $\vec{r_{ij}}$ so that the **conservation equations** become one-dimensional along the **interatomic coordinate**. <br><br>
 
 <center>
-$$\large m_{i}v_{i} = m_{i}v_{i}^{\prime} + \Delta p$$ 
+$\large m_{i}v_{i} = m_{i}v_{i}^{\prime} + \Delta p$ 
 </center>
 
 <center>
-$$\large m_{j}v_{j} + \Delta p = m_{j}v_{j}^{\prime}$$
+$\large m_{j}v_{j} + \Delta p = m_{j}v_{j}^{\prime}$ 
 </center>
 
 which implies
 
 <center>
-$$\large m_{i}v_{i} +  m_{j}v_{j} = m_{i}v_{i}^{\prime} + m_{j}v_{j}^{\prime}$$ 
+$\large m_{i}v_{i} +  m_{j}v_{j} = m_{i}v_{i}^{\prime} + m_{j}v_{j}^{\prime}$ 
 </center>
 
 <center>
-$$\large \frac{1}{2} m_{i}v_{i}^{2} + \frac{1}{2} m_{j}v_{j}^{2} = \frac{1}{2} m_{i}v_{i}^{\prime 2} + \frac{1}{2} m_{j}v_{j}^{\prime 2}$$ 
+$\large \frac{1}{2} m_{i}v_{i}^{2} + \frac{1}{2} m_{j}v_{j}^{2} = \frac{1}{2} m_{i}v_{i}^{\prime 2} + \frac{1}{2} m_{j}v_{j}^{\prime 2}$ 
 </center>
 
 From the previous 4 equations, the **transferred momentum** is readily determined as:
 <br><br>
 
 <center>
-$$\large \Delta p = \large \frac{2m_{i}m_{j}}{m_{i}+m_{j}} (v_{i} - v_{j})$$ 
+$\large \Delta p = \large \frac{2m_{i}m_{j}}{m_{i}+m_{j}} (v_{i} - v_{j})$ 
 </center>
 
-and the final **velocities** of **particles** i and j are determined through the previous equations \\(m_{i}\vec{v_{i}}\\) and \\( m_{j}\vec{v_{j}} + \Delta \vec{p}\\).
+and the final **velocities** of **particles** i and j are determined through the previous equations $ m_{i}\vec{v_{i}}$ and $ m_{j}\vec{v_{j}} + \Delta \vec{p}$.
 
-The **interaction potentials** are defined as **infinite square wells**, such that the **particle-particle distances** vary between \\(d_{min}=(1-σ)r_{ij}^{0}\\) and \\(d_{max}=(1+σ)r_{ij}^{0}\\), \\(r_{ij}^{0}\\) being the **distance in the native conformation** and 2σ the **width of the square well**. The **MD-averaged conformation** is taken as the **native conformation**. **Residue-residue interaction potentials** are defined only for the **particles** at a distance smaller than a **cut-off radius** \\(r_{c}\\) in the native conformation. Otherwise the **particles** only interact via a hardcore **repulsive potential** that avoids **steric clashes**. For **non-consecutive \\(C\alpha\\) particles**, \\(r_{c} = 8 Å\\) and σ = 0.1 were used, while for **consecutive pairs of residues** a **smaller well width** (σ = 0.05) was chosen to keep the **Cα – Cα distances** closer to the expected value (3.8 Å).
+The **interaction potentials** are defined as **infinite square wells**, such that the **particle-particle distances** vary between $d_{min}=(1-σ)r_{ij}^{0}$ and $d_{max}=(1+σ)r_{ij}^{0}$, $r_{ij}^{0}$ being the **distance in the native conformation** and 2σ the **width of the square well**. The **MD-averaged conformation** is taken as the **native conformation**. **Residue-residue interaction potentials** are defined only for the **particles** at a distance smaller than a **cut-off radius** $r_{c}$ in the native conformation. Otherwise the **particles** only interact via a hardcore **repulsive potential** that avoids **steric clashes**. For **non-consecutive $C\alpha$ particles**, $r_{c} = 8 Å$ and σ = 0.1 were used, while for **consecutive pairs of residues** a **smaller well width** (σ = 0.05) was chosen to keep the **Cα – Cα distances** closer to the expected value (3.8 Å).
 
 ***
 **Building Blocks** used:
@@ -440,11 +475,10 @@ dmd_run(
 )
 ```
 
-<a id="dmd_dcd"></a>
+<a id="dmd_xtc"></a>
 ***
-
-### Fitting and converting DMD trajectory to DCD (visualization)
-Fitting and converting the generated **Discrete Molecular Dynamics** (DMD) **coarse-grained trajectory** from the **mdcrd** format to a **dcd** format, for the sake of visualization with **NGL** (see next cell).<br> <br>
+### Fitting and converting DMD trajectory to XTC (visualization)
+Fitting and converting the generated **Discrete Molecular Dynamics** (DMD) **coarse-grained trajectory** from the **mdcrd** format to a **xtc** format, for the sake of visualization with **NGL** (see next cell).<br> <br>
 ***
 **Building Blocks** used:
  - [cpptraj_rms](https://biobb-analysis.readthedocs.io/en/stable/ambertools.html#module-ambertools.cpptraj_rms) from **biobb_analysis.ambertools.cpptraj_rms**
@@ -455,7 +489,7 @@ Fitting and converting the generated **Discrete Molecular Dynamics** (DMD) **coa
 from biobb_analysis.ambertools.cpptraj_rms import cpptraj_rms
 
 dmd_rmsd = 'dmd_ensemble_rmsd.dat'
-dmd_dcd = 'dmd_ensemble.dcd'
+dmd_xtc = 'dmd_ensemble.xtc'
 
 prop = {
     'start': 1,
@@ -468,20 +502,19 @@ prop = {
 cpptraj_rms(input_top_path=ca_pdb,
             input_traj_path=dmd_crd,
             output_cpptraj_path=dmd_rmsd,
-            output_traj_path=dmd_dcd,
+            output_traj_path=dmd_xtc,
             input_exp_path=ca_pdb,
             properties=prop)
 ```
 
 <a id="vis3D_DMD"></a>
-
 #### Visualizing trajectory
 Visualizing the **CG trajectory** using **NGL**: 
 
 
 ```python
 # Show trajectory
-view = nglview.show_simpletraj(nglview.SimpletrajTrajectory(dmd_dcd, ca_pdb), gui=True)
+view = nglview.show_simpletraj(nglview.SimpletrajTrajectory(dmd_xtc, ca_pdb), gui=True)
 view._remote_call('setSize', target='Widget', args=['','600px'])
 view
 ```
@@ -490,49 +523,48 @@ view
 
 <a id="nma"></a>
 ***
-
 ### Normal Mode Analysis
 
 **Normal Mode Analysis** (NMA) can be defined as the **multidimensional** treatment of **coupled oscillators** from the analysis of **force-derivatives** in **equilibrium conformations**. This methodology assumes that the **displacement** of an **atom** from its **equilibrium position** is small and that the **potential energy** in the vicinity of the **equilibrium position** can be approximated as a **sum of terms** that are **quadratic** in the **atomic displacements**. In its purest form, it uses the same **all-atom force field** from a **MD simulation**, implying a prior **in vacuo minimization** ([Go and Scheraga 1976](https://pubs.acs.org/cgi-bin/abstract.cgi/mamobx/1976/9/i04/f-pdf/f_ma60052a001.pdf?sessid=6006l3); [Brooks III, Karplus et al. 1987](https://adsabs.harvard.edu/abs/1990PhT....43b.120B)). 
 
-[Tirion (1996)](https://link.aps.org/doi/10.1103/PhysRevLett.77.1905) proposed a **simplified model** where the **interaction** between two atoms was described by **Hookean pairwise potential** where the distances are taken to be at the minimum, avoiding the minimization (referred as **Elastic Network Model** -ENM-). This idea being further extended to use **coarse-grained** (\\(C\alpha\\)) protein representation by several research groups, as in the **Gaussian Network Model** -GNM- ([Bahar et al. 1997](https://linkinghub.elsevier.com/retrieve/pii/S1359027897000242); [Haliloglu et al. 1997](https://link.aps.org/doi/10.1103/PhysRevLett.79.3090)). The **GNM model** was later extended to a 3-D, vectorial **Anisotropic Network Model** -ANM-, which is the formalism implemented in the **FlexServ server** and the **BioBB FlexServ module** ([Atilgan et al. 2001](https://www.biophysj.org/cgi/content/abstract/80/1/505)). Through the **diagonalization** of the **hessian matrix**, the **ANM** provides **eigenvalues** and **eigenvectors** that not only describe the **frequencies** and **shapes** of the **normal modes**, but also their **directions**.
+[Tirion (1996)](https://link.aps.org/doi/10.1103/PhysRevLett.77.1905) proposed a **simplified model** where the **interaction** between two atoms was described by **Hookean pairwise potential** where the distances are taken to be at the minimum, avoiding the minimization (referred as **Elastic Network Model** -ENM-). This idea being further extended to use **coarse-grained** ($C\alpha$) protein representation by several research groups, as in the **Gaussian Network Model** -GNM- ([Bahar et al. 1997](https://linkinghub.elsevier.com/retrieve/pii/S1359027897000242); [Haliloglu et al. 1997](https://link.aps.org/doi/10.1103/PhysRevLett.79.3090)). The **GNM model** was later extended to a 3-D, vectorial **Anisotropic Network Model** -ANM-, which is the formalism implemented in the **FlexServ server** and the **BioBB FlexServ module** ([Atilgan et al. 2001](https://www.biophysj.org/cgi/content/abstract/80/1/505)). Through the **diagonalization** of the **hessian matrix**, the **ANM** provides **eigenvalues** and **eigenvectors** that not only describe the **frequencies** and **shapes** of the **normal modes**, but also their **directions**.
 
-Within the **Elastic Network Model** approach (ENM) the network topology is described by a **Kirchhoff matrix** Γ of **inter-atomic contacts** where the ij-th element is equal to -1 if nodes (i.e. \\(C\alpha\\)) i and j are within the cutoff distance \\(r_{c}\\), and zero otherwise, and the **diagonal elements** (ii-th) are equal to the **connectivity of the residue**:
+Within the **Elastic Network Model** approach (ENM) the network topology is described by a **Kirchhoff matrix** Γ of **inter-atomic contacts** where the ij-th element is equal to -1 if nodes (i.e. $C\alpha$) i and j are within the cutoff distance $r_{c}$, and zero otherwise, and the **diagonal elements** (ii-th) are equal to the **connectivity of the residue**:
 
 <center>
-$$\large \Gamma_{ii} = - \sum\limits_{k|k\neq i}^{N} \Gamma_{ik}$$
+$\large \Gamma_{ii} = - \sum\limits_{k|k\neq i}^{N} \Gamma_{ik}$
 </center>
 
 In the **ANM approach**, the **potential energy** between two residues i-j is given by:
 <br><br>
 
 <center>
-$$\large E = 0.5 · \gamma · \Gamma_{ij} (r_{ij} - r_{ij}^{0})^{2}$$
+$\large E = 0.5 · \gamma · \Gamma_{ij} (r_{ij} - r_{ij}^{0})^{2}$
 </center>
 
-where \\(r_{ij}\\) and \\(r_{ij}^{0}\\) are the **instantaneous** and **reference** (equilibrium) **position vectors** of atoms i and j and γ is the **force constant**; in the original formalism by Atilgan et al, γ=1 kcal/mol.Å² (see below).
+where $r_{ij}$ and $r_{ij}^{0}$ are the **instantaneous** and **reference** (equilibrium) **position vectors** of atoms i and j and γ is the **force constant**; in the original formalism by Atilgan et al, γ=1 kcal/mol.Å² (see below).
 
-For the sake of simplicity, the product of the **force constant** for a given i, j pair \\(γ_{ij}\\) and the corresponding **Kirchhoff matrix** element \\(Γ_{ij}\\) can be expresed as a single **stiffness constant** \\(K_{ij}\\):
+For the sake of simplicity, the product of the **force constant** for a given i, j pair $γ_{ij}$ and the corresponding **Kirchhoff matrix** element $Γ_{ij}$ can be expresed as a single **stiffness constant** $K_{ij}$:
 
 <center>
-$$\large K_{ij} = 0.5 · \gamma · \Gamma_{ij}$$
+$\large K_{ij} = 0.5 · \gamma · \Gamma_{ij}$
 </center>
 
 The **molecular Hamiltonian** is given by the **elastic energy** to displace a protein from its **equilibrium conformation**:
 <br><br>
 
 <center>
-$$\large E_{ij} = \sum\limits_{i\neq j} K_{ij} (r_{ij} - r_{ij}^{0})^{2}$$
+$\large E_{ij} = \sum\limits_{i\neq j} K_{ij} (r_{ij} - r_{ij}^{0})^{2}$
 </center>
 
-This **potential function** is used to build a **Hessian matrix** (H), a **3N x 3N matrix** (N is the **number of nodes** in the protein) defined as N x N submatrices \\(H_{ij}\\) containing the **second derivatives** of the **energy respect the coordinates** of each protein node. **Diagonalization** of the **Hessian** yields the **eigenvectors** (the essential deformation modes) and the associated **eigenvalues** (stiffness constants).
+This **potential function** is used to build a **Hessian matrix** (H), a **3N x 3N matrix** (N is the **number of nodes** in the protein) defined as N x N submatrices $H_{ij}$ containing the **second derivatives** of the **energy respect the coordinates** of each protein node. **Diagonalization** of the **Hessian** yields the **eigenvectors** (the essential deformation modes) and the associated **eigenvalues** (stiffness constants).
 
-As presented, **NMA** defines **springs** between all pairs of residues with no zero elements in the corresponding **Kirchhoff matrix** element \\(Γ_{ij}\\). In principle all **inter-residue force-constants** have then two possible values: 0 if the residues are not connected (Kirchhoff matrix element equal to 0) and γ otherwise. The standard approach (Tirion 1996) defines the **connectivity index** by using an **spherical cutoff** \\(r_{c}\\):
+As presented, **NMA** defines **springs** between all pairs of residues with no zero elements in the corresponding **Kirchhoff matrix** element $Γ_{ij}$. In principle all **inter-residue force-constants** have then two possible values: 0 if the residues are not connected (Kirchhoff matrix element equal to 0) and γ otherwise. The standard approach (Tirion 1996) defines the **connectivity index** by using an **spherical cutoff** $r_{c}$:
 <br><br>
 
 <center>
-$$\large \Gamma_{ij} = -1$$ if $$\large r_{ij}^{0} \le r_{c}$$ <br>
-$$\large \Gamma_{ij} = 0$$ otherwise
+$\large \Gamma_{ij} = -1$ if $\large r_{ij}^{0} \le r_{c}$ <br>
+$\large \Gamma_{ij} = 0$ otherwise
 </center>
 
 **Cutoff distances** around 8-12 Å have been used, being the most usual the range 8-9 Angstroms, although some authors have explored values as high as 20-25 Å (Sen & Jernigan, 2006). Different **cut-off radii** can be used for different proteins based on **size**, **shape**, **density** or other **protein characteristics**.
@@ -543,45 +575,45 @@ This approximation, with **interactions** defined by an uniform γ within a **cu
 <br><br>
 
 <center>
-$$\large K_{ij} = C \left ( \frac {r^{*}} {r_{ij}^{0}} \right)^{6} + as_{ij}$$
+$\large K_{ij} = C \left ( \frac {r^{*}} {r_{ij}^{0}} \right)^{6} + as_{ij}$
 </center>
 
-where C is a **stiffness constant** (taken as 40 kcal/mol Å²), r* is a **fitted constant**, taken as the mean \\(C\alpha - C\alpha\\) **distance** between consecutive residues (3.8 Angstroms), \\(r_{ij}^{0}\\) is the **equilibrium distance** between the \\(C\alpha\\) of residues i and j and \\(as_{ij}\\) is an **inter residue-residue constant surface**. In practice, the **surface correction** is small and has been ignored in our implementation of the method, available in the **FlexServ server** and **BioBB FlexServ module** as an alternative to standard **cutoff-based** method. This method maintains the simplicity of the original method and avoids the problems intrinsic to the use of a **.cutoff**. The major drawback is that, by connecting all residues in the network, both increases the **rigidity** of the system and lowers the **speed of the computation**.
+where C is a **stiffness constant** (taken as 40 kcal/mol Å²), r* is a **fitted constant**, taken as the mean $C\alpha - C\alpha$ **distance** between consecutive residues (3.8 Angstroms), $r_{ij}^{0}$ is the **equilibrium distance** between the $C\alpha$ of residues i and j and $as_{ij}$ is an **inter residue-residue constant surface**. In practice, the **surface correction** is small and has been ignored in our implementation of the method, available in the **FlexServ server** and **BioBB FlexServ module** as an alternative to standard **cutoff-based** method. This method maintains the simplicity of the original method and avoids the problems intrinsic to the use of a **.cutoff**. The major drawback is that, by connecting all residues in the network, both increases the **rigidity** of the system and lowers the **speed of the computation**.
 
-The **cutoff-based** and **Kovac’s** versions of **NMA** were improved with **multi-parametric fitting** of **NMA** to **atomistic MD simulations** in a large number of proteins (CITE!!  Orellana et al., **to be published**). The refined method, which is available in the **FlexServ server** and the **BioBB FlexServ module**, defines a **network topology** by an effective **Kirchhoff matrix** Γ that is the sum of a **Rouse Chain topology matrix** for the first 3 neighbours, with a usual **Kirchhoff matrix** for **distant interactions**, rendering a mixed **connectivity matrix** that combines both **sequential** and **distant information**. Thus, given a pair of residues i, and j with sequential distance \\(S_{ij}>0\\) and **Cartesian distance** \\(r_{ij}\\), the ij-th element of the **inter-residue contact matrix** is defined as:
+The **cutoff-based** and **Kovac’s** versions of **NMA** were improved with **multi-parametric fitting** of **NMA** to **atomistic MD simulations** in a large number of proteins (CITE!!  Orellana et al., **to be published**). The refined method, which is available in the **FlexServ server** and the **BioBB FlexServ module**, defines a **network topology** by an effective **Kirchhoff matrix** Γ that is the sum of a **Rouse Chain topology matrix** for the first 3 neighbours, with a usual **Kirchhoff matrix** for **distant interactions**, rendering a mixed **connectivity matrix** that combines both **sequential** and **distant information**. Thus, given a pair of residues i, and j with sequential distance $S_{ij}>0$ and **Cartesian distance** $r_{ij}$, the ij-th element of the **inter-residue contact matrix** is defined as:
 <br><br>
 
 <center>
-$$\Gamma_{ij}=\left\{\begin{matrix}\space S_{ij}<3 & \Gamma_{ij}=-1 \\ S_{ij}>3 & 
+$\Gamma_{ij}=\left\{\begin{matrix}\space S_{ij}<3 & \Gamma_{ij}=-1 \\ S_{ij}>3 & 
 \left\{\begin{matrix} \Gamma_{ij}=-1 & if r_{ij}^0 \leq r_{c} \\ \Gamma_{ij}=0 & otherwise \end{matrix} \right\} 
-\end{matrix}\right\}$$
+\end{matrix}\right\}$
 </center>
 
-The **distance** (both in Cartesian and Sequence space) dependence of the **force-constant**, and the associated **scaling factors** \\(C_{cart}\\) and \\(C_{seq}\\) were adjusted to reproduce **atomistic MD simulations** (\\(C_{seq}\\)=60 kcal/mol.Å² and \\(C_{cart}\\)=6 kcal/mol.Å², lower or higher values can be considered for extremely small or large systems). The same **fitting procedure** was followed to obtain a **size-dependent cutoff distance** (\\(r_{c}\\)), that can be approximated with a **logarithmic function** of the protein length, with extreme values of 8 and 16 Angstroms for most proteins (up to 17-20 Angstroms for extremely large proteins, above 700 residues). Thus the **MD-ANM** mixed model combines an **MD calibrated inverse exponential function** with a **length-dependent cutoff** to discard **redundant interactions**, also improving **computational efficency**. The resulting network gives flexibility patterns closest to MD, being not only the **eigenvectors**, but also the **eigenvalues** more physically meaningful.
+The **distance** (both in Cartesian and Sequence space) dependence of the **force-constant**, and the associated **scaling factors** $C_{cart}$ and $C_{seq}$ were adjusted to reproduce **atomistic MD simulations** ($C_{seq}$=60 kcal/mol.Å² and $C_{cart}$=6 kcal/mol.Å², lower or higher values can be considered for extremely small or large systems). The same **fitting procedure** was followed to obtain a **size-dependent cutoff distance** ($r_{c}$), that can be approximated with a **logarithmic function** of the protein length, with extreme values of 8 and 16 Angstroms for most proteins (up to 17-20 Angstroms for extremely large proteins, above 700 residues). Thus the **MD-ANM** mixed model combines an **MD calibrated inverse exponential function** with a **length-dependent cutoff** to discard **redundant interactions**, also improving **computational efficency**. The resulting network gives flexibility patterns closest to MD, being not only the **eigenvectors**, but also the **eigenvalues** more physically meaningful.
 
 Our **FlexServ server** and **BioBB FlexServ module** implement the **ANM** formalism with the three different definitions of the **force constants** described above:
 
 - The so called **linear** or **distance-cutoff** formalism, equal to the original **ANM** but with a default γ=10 kcal/mol.Å² for the **ANM linear implementation** as in [elNémo](http://www.sciences.univ-nantes.fr/elnemo/) ([Suhre & Sanejouand](https://doi.org/10.1093/nar/gkh368) (2004)). The default **cutoff value** in this case is 8Å, or 9Å for larger proteins (above 150-200 residues).
 
 
-- The **Kovacs**, **inverse exponential** formalism, in which the **force constant** is defined by a **continuous function**; the default values of C=40 kcal/mol Å², and \\(r_{ij}^{0}=3.8 Å\\) is used; \\(as_{ij}\\) term is neglected.
+- The **Kovacs**, **inverse exponential** formalism, in which the **force constant** is defined by a **continuous function**; the default values of C=40 kcal/mol Å², and $r_{ij}^{0}=3.8 Å$ is used; $as_{ij}$ term is neglected.
 
 
-- The **Mixed** formalism, in which the **force constant** follows a complex definition with all parameters (\\(r_{c}\\), \\(C_{cart}\\) and \\(C_{cont}\\)) fitted according to **MD simulations** as explained before:
+- The **Mixed** formalism, in which the **force constant** follows a complex definition with all parameters ($r_{c}$, $C_{cart}$ and $C_{cont}$) fitted according to **MD simulations** as explained before:
 
 <center>
-$$K_{ij}=\left\{\begin{matrix} S_{ij}\leq 3 & K_{ij}=\frac{C_{seq}}{S_{ij}^2}\space \\ S_{ij}>3 & 
+$K_{ij}=\left\{\begin{matrix} S_{ij}\leq 3 & K_{ij}=\frac{C_{seq}}{S_{ij}^2}\space \\ S_{ij}>3 & 
 \left\{\begin{matrix}K_{ij}=\left(\frac{C_{cart}}{r_{ij}^0}\right)^6 & if r_{ij}^0\leq r_{c} \\ K_{ij}=0 & otherwise \end{matrix}\right)
-\end{matrix}\right\}$$
+\end{matrix}\right\}$
 </center>
 
 Once **NMA** is performed and the set of **eigenvectors/eigenvalues** is determined, ***Cartesian pseudo-trajectories*** at **physiologic temperature** can be obtained by activating **normal mode deformations** using a **Metropolis Monte Carlo algorithm** with a **Hamiltonian** defined as shown above. The **displacements** obtained by such algorithm can then be projected to the **Cartesian space** to generate the ***pseudo-trajectories***. Note that by limiting the size of the sum in the **molecular hamiltonian equation** to only important **eigenvectors** (m’<n), the **trajectory** can be enriched in sampling of **essential deformation modes** ([Rueda et al. 2007a](https://linkinghub.elsevier.com/retrieve/pii/S0969212607001414)).
 
 <center>
-$$\large E = \sum \limits_{i=1}^{m^{\prime}} K_{i}\Delta D_{i}^{2}$$
+$\large E = \sum \limits_{i=1}^{m^{\prime}} K_{i}\Delta D_{i}^{2}$
 </center>
 
-where \\(K_i=\frac{k_BT}{2\lambda}\\) (λ being the eigenvalue in distance² units) and \\(\Delta D_{i}\\) is the displacement along the mode.
+where $K_i=\frac{k_BT}{2\lambda}$ (λ being the eigenvalue in distance² units) and $\Delta D_{i}$ is the displacement along the mode.
 
 ***
 **Building Blocks** used:
@@ -593,6 +625,9 @@ where \\(K_i=\frac{k_BT}{2\lambda}\\) (λ being the eigenvalue in distance² uni
 # Running Normal Mode Analysis (NMA)
 # Import module
 from biobb_flexserv.flexserv.nma_run import nma_run
+
+# uncomment if executing in google colab
+# %env CONDA_PREFIX=/usr/local
 
 # Create properties dict and inputs/outputs
 
@@ -611,11 +646,10 @@ nma_run(
 )
 ```
 
-<a id="nma_dcd"></a>
+<a id="nma_xtc"></a>
 ***
-
-### Fitting and converting NMA trajectory to DCD (visualization)
-Fitting and converting the generated **Normal Mode Analysis** (NMA) **coarse-grained trajectory** from the **mdcrd** format to a **dcd** format, for the sake of visualization with **NGL** (see next cell).<br> <br>
+### Fitting and converting NMA trajectory to XTC (visualization)
+Fitting and converting the generated **Normal Mode Analysis** (NMA) **coarse-grained trajectory** from the **mdcrd** format to a **xtc** format, for the sake of visualization with **NGL** (see next cell).<br> <br>
 ***
 **Building Blocks** used:
  - [cpptraj_rms](https://biobb-analysis.readthedocs.io/en/stable/ambertools.html#module-ambertools.cpptraj_rms) from **biobb_analysis.ambertools.cpptraj_rms**
@@ -626,7 +660,7 @@ Fitting and converting the generated **Normal Mode Analysis** (NMA) **coarse-gra
 from biobb_analysis.ambertools.cpptraj_rms import cpptraj_rms
 
 nma_rmsd = 'nma_ensemble_rmsd.dat'
-nma_dcd = 'nma_ensemble.dcd'
+nma_xtc = 'nma_ensemble.xtc'
 
 prop = {
     'start': 1,
@@ -639,20 +673,19 @@ prop = {
 cpptraj_rms(input_top_path=ca_pdb,
             input_traj_path=nma_crd,
             output_cpptraj_path=nma_rmsd,
-            output_traj_path=nma_dcd,
+            output_traj_path=nma_xtc,
             input_exp_path=ca_pdb,
             properties=prop)
 ```
 
 <a id="vis3D_NMA"></a>
-
 #### Visualizing trajectory
 Visualizing the **CG trajectory** using **NGL**: 
 
 
 ```python
 # Show trajectory
-view = nglview.show_simpletraj(nglview.SimpletrajTrajectory(nma_dcd, ca_pdb), gui=True)
+view = nglview.show_simpletraj(nglview.SimpletrajTrajectory(nma_xtc, ca_pdb), gui=True)
 view._remote_call('setSize', target='Widget', args=['','600px'])
 view
 ```
@@ -661,7 +694,6 @@ view
 
 <a id="flex"></a>
 ***
-
 ## Molecular Flexibility Analyses
 
 
@@ -676,7 +708,6 @@ In all the analysis the resulting data is presented as a **json-formatted files*
 
 <a id="pcazip"></a>
 ***
-
 ### PCAsuite: Compressing trajectory
 
 **PCAsuite** is used to compress **Molecular Dynamics (MD) trajectories** using **Principal Component Analysis (PCA)** algorithms. This technique offers a good **compression ratio** at the expense of **losing some precision** in the trajectory.
@@ -706,15 +737,15 @@ The next cell is **compressing** the previously generated **coarse-grained** tra
 
 References: <br>
 
-**PCA suite**: [https://mmb.irbbarcelona.org/software/pcasuite/](https://mmb.irbbarcelona.org/software/pcasuite/)
+**PCA suite**: https://mmb.irbbarcelona.org/software/pcasuite/
 
 **Essential Dynamics:  A Tool for Efficient Trajectory Compression and Management.**<br>
 *J. Chem. Theory Comput. 2006, 2, 2, 251–258*<br>
-*Available at: [https://doi.org/10.1021/ct050285b](https://doi.org/10.1021/ct050285b)*
+*Available at: https://doi.org/10.1021/ct050285b*
 
 **pyPcazip: A PCA-based toolkit for compression and analysis of molecular simulation data.**<br>
 *SoftwareX, Volume 5, 2016, Pages 44-50*<br>
-*Available at: [https://doi.org/10.1016/j.softx.2016.04.002](https://doi.org/10.1016/j.softx.2016.04.002)*
+*Available at: https://doi.org/10.1016/j.softx.2016.04.002*
 
 ***
 **Building Blocks** used:
@@ -753,7 +784,6 @@ pcz_zip( input_pdb_path=ca_pdb,
 
 <a id="pcaunzip"></a>
 ***
-
 ### PCAsuite: Uncompressing trajectory
 
 The **PCA suite** **data compression** method based on **principal component analysis** works remarkably well with **MD trajectory data**, permitting files to be reduced to typically less than **one tenth** of their **original size** with very acceptable levels of approximation. 
@@ -790,15 +820,15 @@ pcz_unzip(input_pcz_path=dmd_pcz,
 pcz_unzip(input_pcz_path=nma_pcz,
         output_crd_path=nma_crd_uncompressed)
 
-# Converting from mdcrd to DCD format (visualization)
+# Converting from mdcrd to XTC format (visualization)
 from biobb_analysis.ambertools.cpptraj_rms import cpptraj_rms
 
 bd_uncompressed_rmsd = 'bd_ensemble_uncompressed.rmsd.dat'
-bd_dcd_uncompressed = 'bd_ensemble_uncompressed.dcd'
+bd_xtc_uncompressed = 'bd_ensemble_uncompressed.xtc'
 dmd_uncompressed_rmsd = 'dmd_ensemble_uncompressed.rmsd.dat'
-dmd_dcd_uncompressed = 'dmd_ensemble_uncompressed.dcd'
+dmd_xtc_uncompressed = 'dmd_ensemble_uncompressed.xtc'
 nma_uncompressed_rmsd = 'nma_ensemble_uncompressed.rmsd.dat'
-nma_dcd_uncompressed = 'nma_ensemble_uncompressed.dcd'
+nma_xtc_uncompressed = 'nma_ensemble_uncompressed.xtc'
 
 prop = {
     'start': 1,
@@ -810,85 +840,81 @@ prop = {
 cpptraj_rms(input_top_path=ca_pdb,
             input_traj_path=bd_crd_uncompressed,
             output_cpptraj_path=bd_uncompressed_rmsd,
-            output_traj_path=bd_dcd_uncompressed,
+            output_traj_path=bd_xtc_uncompressed,
             input_exp_path= ca_pdb,
             properties=prop)
 
 cpptraj_rms(input_top_path=ca_pdb,
             input_traj_path=dmd_crd_uncompressed,
             output_cpptraj_path=dmd_uncompressed_rmsd,
-            output_traj_path=dmd_dcd_uncompressed,
+            output_traj_path=dmd_xtc_uncompressed,
             input_exp_path= ca_pdb,
             properties=prop)
 
 cpptraj_rms(input_top_path=ca_pdb,
             input_traj_path=nma_crd_uncompressed,
             output_cpptraj_path=nma_uncompressed_rmsd,
-            output_traj_path=nma_dcd_uncompressed,
+            output_traj_path=nma_xtc_uncompressed,
             input_exp_path= ca_pdb,
             properties=prop)
 ```
 
 <a id="vis3D_PCZ_BD"></a>
-
 #### Visualizing trajectory
 Visualizing the **original** and the **uncompressed BD trajectories** using **NGL**, for the sake of comparison: 
 
 
 ```python
 # Show BD original vs uncompressed trajectories
-view1 = nglview.show_simpletraj(nglview.SimpletrajTrajectory(bd_dcd, ca_pdb), gui=True)
+view1 = nglview.show_simpletraj(nglview.SimpletrajTrajectory(bd_xtc, ca_pdb), gui=True)
 view1._remote_call('setSize', target='Widget', args=['','600px'])
 view1
-view2 = nglview.show_simpletraj(nglview.SimpletrajTrajectory(bd_dcd_uncompressed, ca_pdb), gui=True)
+view2 = nglview.show_simpletraj(nglview.SimpletrajTrajectory(bd_xtc_uncompressed, ca_pdb), gui=True)
 view2._remote_call('setSize', target='Widget', args=['','600px'])
 view2
 ipywidgets.HBox([view1, view2])
 ```
 
-<img src='_static/traj4.gif' style='float:left; width:50%'></img><img src='_static/traj5.gif' style='float:left; width:50%'></img>
+<img src='_static/traj4.gif' style='float:left; width:50%;'></img><img src='_static/traj5.gif' style='float:left; width:50%;'></img>
 
 <a id="vis3D_PCZ_DMD"></a>
-
 #### Visualizing trajectory
 Visualizing the **original** and the **uncompressed DMD trajectories** using **NGL**, for the sake of comparison: 
 
 
 ```python
 # Show DMD original vs uncompressed trajectories
-view1 = nglview.show_simpletraj(nglview.SimpletrajTrajectory(dmd_dcd, ca_pdb), gui=True)
+view1 = nglview.show_simpletraj(nglview.SimpletrajTrajectory(dmd_xtc, ca_pdb), gui=True)
 view1._remote_call('setSize', target='Widget', args=['','600px'])
 view1
-view2 = nglview.show_simpletraj(nglview.SimpletrajTrajectory(dmd_dcd_uncompressed, ca_pdb), gui=True)
+view2 = nglview.show_simpletraj(nglview.SimpletrajTrajectory(dmd_xtc_uncompressed, ca_pdb), gui=True)
 view2._remote_call('setSize', target='Widget', args=['','600px'])
 view2
 ipywidgets.HBox([view1, view2])
 ```
 
-<img src='_static/traj6.gif' style='float:left; width:50%'></img><img src='_static/traj7.gif' style='float:left; width:50%'></img>
+<img src='_static/traj6.gif' style='float:left; width:50%;'></img><img src='_static/traj7.gif' style='float:left; width:50%;'></img>
 
 <a id="vis3D_PCZ_NMA"></a>
-
 #### Visualizing trajectory
 Visualizing the **original** and the **uncompressed NMA trajectories** using **NGL**, for the sake of comparison: 
 
 
 ```python
 # Show NMA original vs uncompressed trajectories
-view1 = nglview.show_simpletraj(nglview.SimpletrajTrajectory(nma_dcd, ca_pdb), gui=True)
+view1 = nglview.show_simpletraj(nglview.SimpletrajTrajectory(nma_xtc, ca_pdb), gui=True)
 view1._remote_call('setSize', target='Widget', args=['','600px'])
 view1
-view2 = nglview.show_simpletraj(nglview.SimpletrajTrajectory(nma_dcd_uncompressed, ca_pdb), gui=True)
+view2 = nglview.show_simpletraj(nglview.SimpletrajTrajectory(nma_xtc_uncompressed, ca_pdb), gui=True)
 view2._remote_call('setSize', target='Widget', args=['','600px'])
 view2
 ipywidgets.HBox([view1, view2])
 ```
 
-<img src='_static/traj8.gif' style='float:left; width:50%'></img><img src='_static/traj9.gif' style='float:left; width:50%'></img>
+<img src='_static/traj8.gif' style='float:left; width:50%;'></img><img src='_static/traj9.gif' style='float:left; width:50%;'></img>
 
 <a id="pca_report"></a>
 ***
-
 ### PCAsuite: Principal Components Analysis Report
 
 The result of the **PCA analysis** is the generation of a set of **eigenvectors** (the modes or the principal components), which describe the nature of the **deformation movements** of the protein and a set of **eigenvalues**, which indicate the **stiffness** associated to every **mode**. By default the **eigenvalues** appear in distance² units, but can be transformed in **energy units** using **harmonic approximation**.
@@ -931,17 +957,18 @@ The following plot shows the **total variance** of the trajectory and how it is 
 y = np.array(pcz_info['Eigen_Values'])
 x = list(range(1,len(y)+1))
 
-plotly.offline.init_notebook_mode(connected=True)
+# Create a scatter plot
+fig = go.Figure(data=[go.Scatter(x=x, y=y)])
 
-fig = {
-    "data": [go.Scatter(x=x, y=y)],
-    "layout": go.Layout(title="Variance Profile",
-                        xaxis=dict(title = "Principal Component"),
-                        yaxis=dict(title = "Variance")
-                       )
-}
+# Update layout
+fig.update_layout(title="Variance Profile",
+                  xaxis_title="Principal Component",
+                  yaxis_title="Variance",
+                  height=600)
 
-plotly.offline.iplot(fig)
+# Show the figure (renderer changes for colab and jupyter)
+rend = 'colab' if 'google.colab' in sys.modules else ''
+fig.show(renderer=rend)
 ```
 
 <img src='_static/plot1.png'></img>
@@ -958,24 +985,24 @@ Note that this plot and the previous one provide **physically-different** inform
 y = np.array(pcz_info['Eigen_Values_dimensionality_vs_total'])
 x = list(range(1,len(y)+1))
 
-plotly.offline.init_notebook_mode(connected=True)
+# Create a scatter plot
+fig = go.Figure(data=[go.Scatter(x=x, y=y)])
 
-fig = {
-    "data": [go.Scatter(x=x, y=y)],
-    "layout": go.Layout(title="Dimensionality/Quality profile",
-                        xaxis=dict(title = "Principal Component"),
-                        yaxis=dict(title = "Accumulated Quality (%)")
-                       )
-}
+# Update layout
+fig.update_layout(title="Dimensionality/Quality profile",
+                  xaxis_title="Principal Component",
+                  yaxis_title="Accumulated Quality (%)",
+                  height=600)
 
-plotly.offline.iplot(fig)
+# Show the figure (renderer changes for colab and jupyter)
+rend = 'colab' if 'google.colab' in sys.modules else ''
+fig.show(renderer=rend)
 ```
 
 <img src='_static/plot2.png'></img>
 
 <a id="pca_eigenvectors"></a>
 ***
-
 ### PCAsuite: Eigen Vectors
 
 As stated above, the generated set of **eigenvectors** (the modes or the principal components) describe the nature of the **deformation movements** of the protein, whereas the **eigenvalues** indicate the **stiffness** associated to every **mode**. Inspection of the **atomic components** of **eigenvalues** associated to the most important **eigenvectors** helps to determine the **contribution** of different residues to the **key essential deformations** of the protein.
@@ -1018,17 +1045,18 @@ print(json.dumps(pcz_evecs_report_json, indent=2))
 y = np.array(pcz_evecs_report_json['projs'])
 x = list(range(1,len(y)+1))
 
-plotly.offline.init_notebook_mode(connected=True)
+# Create a bar plot
+fig = go.Figure(data=[go.Bar(x=x, y=y)])
 
-fig = {
-    "data": [go.Bar(x=x, y=y)],
-    "layout": go.Layout(title="Eigen Value Residue Components",
-                        xaxis=dict(title = "Residue Number"),
-                        yaxis=dict(title = "\u00C5")
-                       )
-}
+# Update layout
+fig.update_layout(title="Eigen Value Residue Components",
+                  xaxis_title="Residue Number",
+                  yaxis_title="\u00C5",
+                  height=600)
 
-plotly.offline.iplot(fig)
+# Show the figure (renderer changes for colab and jupyter)
+rend = 'colab' if 'google.colab' in sys.modules else ''
+fig.show(renderer=rend)
 ```
 
 <img src='_static/plot3.png'></img>
@@ -1048,7 +1076,6 @@ view
 
 <a id="pcz_animate"></a>
 ***
-
 ### PCAsuite: Animate Principal Components
 
 **Motions** described by the **eigenvectors** can be visualized by **projecting** the trajectory onto a given **eigenvector** and taking the **2 extreme projections** and **interpolating** between them to create an **animation**. This type of **visualization** is extremely popular as it allows a graphical an easy way to identify the **essential deformation movements** in macromolecules.
@@ -1079,50 +1106,48 @@ pcz_animate( input_pcz_path=nma_pcz,
 ```python
 from biobb_analysis.ambertools.cpptraj_convert import cpptraj_convert
 
-proj1_dcd = 'pcz_proj1.dcd'
+proj1_xtc = 'pcz_proj1.xtc'
 
 prop = {
     'start': 1,
     'end': -1,
     'steps': 1,
     'mask': 'c-alpha',
-    'format': 'dcd'
+    'format': 'xtc'
 }
 
 cpptraj_convert(input_top_path=ca_pdb,
                 input_traj_path=proj1,
-                output_cpptraj_path=proj1_dcd,
+                output_cpptraj_path=proj1_xtc,
                 properties=prop)
 ```
 
 <a id="vis3D_PCZ_animate"></a>
-
 #### Visualizing trajectory
 Visualizing the **PCA animation** for the **first PCA component** of the **NMA trajectory** using **NGL**: 
 
 
 ```python
 # Show trajectory
-view = nglview.show_simpletraj(nglview.SimpletrajTrajectory(proj1_dcd, ca_pdb), gui=True)
+view = nglview.show_simpletraj(nglview.SimpletrajTrajectory(proj1_xtc, ca_pdb), gui=True)
 view._remote_call('setSize', target='Widget', args=['','600px'])
 view
 ```
 
-<img src='_static/traj10.gif'>
+<img src='_static/traj10.gif'></img>
 
 <a id="bfactors"></a>
 ***
-
 ### PCAsuite: Bfactor x Principal Components
 
 The **B-factor** is the standard measure of **residue/atom flexibility**. It is determined from the **oscillations** of a **residue** with respect to its **equilibrium position**:
 <br><br>
 
 <center>
-$$\large B_{factor} = \frac {8}{3} \pi^{2} \langle \Delta r^{2}\rangle $$
+$\large B_{factor} = \frac {8}{3} \pi^{2} \langle \Delta r^{2}\rangle $
 </center>
 
-where \\(\langle \Delta r^{2} \rangle\\) stands for the **oscillations of residues** around **equilibrium positions**.
+where $\langle \Delta r^{2} \rangle$ stands for the **oscillations of residues** around **equilibrium positions**.
 
 **B-factor** profiles represent the distribution of residue **harmonic oscillations**. They can be compared with **X-ray data**, but caution is needed, since crystal **lattice effects** tend to **rigidify** exposed protein residues. Very large **B-factors** should be taken with caution since indicate very **flexible residues** that might display **conformational changes** along the trajectory, which is difficult to follow within the **harmonic approximation** implicit to **B-factor** analysis.
 
@@ -1161,17 +1186,18 @@ pcz_bfactor(
 y = np.loadtxt(bfactor_all_dat)
 x = list(range(1,len(y)+1))
 
-plotly.offline.init_notebook_mode(connected=True)
+# Create a scatter plot
+fig = go.Figure(data=[go.Scatter(x=x, y=y)])
 
-fig = {
-    "data": [go.Scatter(x=x, y=y)],
-    "layout": go.Layout(title="Bfactor x Residue x PCA Modes (All)",
-                        xaxis=dict(title = "Residue Number"),
-                        yaxis=dict(title = "Bfactor (" + '\u00C5' +'\u00B2' + ")")
-                       )
-}
+# Update layout
+fig.update_layout(title="Bfactor x Residue x PCA Modes (All)",
+                  xaxis_title="Residue Number",
+                  yaxis_title="Bfactor (" + '\u00C5' +'\u00B2' + ")",
+                  height=600)
 
-plotly.offline.iplot(fig)
+# Show the figure (renderer changes for colab and jupyter)
+rend = 'colab' if 'google.colab' in sys.modules else ''
+fig.show(renderer=rend)
 ```
 
 <img src='_static/plot4.png'></img>
@@ -1181,7 +1207,7 @@ Visualizing the **trajectory** highlighting the **residues** with higher **B-fac
 
 ```python
 # Show trajectory
-view = nglview.show_simpletraj(nglview.SimpletrajTrajectory(proj1_dcd, bfactor_all_pdb), gui=True)
+view = nglview.show_simpletraj(nglview.SimpletrajTrajectory(proj1_xtc, bfactor_all_pdb), gui=True)
 view.add_representation(repr_type='surface', selection='all', color='bfactor')
 view._remote_call('setSize', target='Widget', args=['','600px'])
 view
@@ -1262,28 +1288,28 @@ y4 = np.loadtxt(bfactor_dat[4])
 y5 = np.loadtxt(bfactor_dat[5])
 x = list(range(1,len(y1)+1))
 
-plotly.offline.init_notebook_mode(connected=True)
+# Create a scatter plot
+fig = go.Figure(data=[go.Scatter(x=x, y=y1, name='PCA Mode 1'),
+                      go.Scatter(x=x, y=y2, name='PCA Mode 2'),
+                      go.Scatter(x=x, y=y3, name='PCA Mode 3'),
+                      go.Scatter(x=x, y=y4, name='PCA Mode 4'),
+                      go.Scatter(x=x, y=y5, name='PCA Mode 5')])
 
-fig = {
-    "data": [go.Scatter(x=x, y=y1, name='PCA Mode 1'),
-             go.Scatter(x=x, y=y2, name='PCA Mode 2'),
-             go.Scatter(x=x, y=y3, name='PCA Mode 3'),
-             go.Scatter(x=x, y=y4, name='PCA Mode 4'),
-             go.Scatter(x=x, y=y5, name='PCA Mode 5')],
-    "layout": go.Layout(title="Bfactor x Residue x PCA Modes ",
-                        xaxis=dict(title = "Residue Number"),
-                        yaxis=dict(title = "Bfactor (" + '\u00C5' +'\u00B2' + ")")
-                       )
-}
+# Update layout
+fig.update_layout(title="Bfactor x Residue x PCA Modes",
+                  xaxis_title="Residue Number",
+                  yaxis_title="Bfactor (" + '\u00C5' +'\u00B2' + ")",
+                  height=600)
 
-plotly.offline.iplot(fig)
+# Show the figure (renderer changes for colab and jupyter)
+rend = 'colab' if 'google.colab' in sys.modules else ''
+fig.show(renderer=rend)
 ```
 
 <img src='_static/plot5.png'></img>
 
 <a id="hinge"></a>
 ***
-
 ### PCAsuite: Hinge points prediction
 
 **Hinge point detection** is integrated in the PCA suite to determine residues around which **large protein movements** are organized. Analysis can be performed using **three different methodologies**, each one with its own implementation. The different **hinge point predictors** have been coupled to both **standard** one and **Gaussian RMSd** fits, but the later is recommended.
@@ -1300,14 +1326,14 @@ The method computes a **force constant** for each residue that is dependent upon
 <br><br>
 
 <center>
-$$\large k_{i} = \frac {1} {\langle (d_{i} - \langle d_{i} \rangle)^{2}\rangle}$$
+$\large k_{i} = \frac {1} {\langle (d_{i} - \langle d_{i} \rangle)^{2}\rangle}$
 </center>
 <br><br>
 <center>
-$$\large d_{i} = \langle d_{ij} \rangle_{j*}$$
+$\large d_{i} = \langle d_{ij} \rangle_{j*}$
 </center>
 
-Where \\(d_{ij}\\) is the **distance** between residue i and residue j, and \\(j^{*}\\) refers to all the residues except j, j-1  and j+1.
+Where $d_{ij}$ is the **distance** between residue i and residue j, and $j^{*}$ refers to all the residues except j, j-1  and j+1.
 
 As stated in the paper, the **peak force constants** will probably correspond to the residues in the **interdomain region**. This means that the **hinge points** are marked by the **peaks in the landscape**.
 
@@ -1399,17 +1425,18 @@ Plotting the **Force Constant** x **residue**:
 y = np.array(hinges_fcte['values_per_residue'])
 x = list(range(1,len(y)+1))
 
-plotly.offline.init_notebook_mode(connected=True)
+# Create a scatter plot
+fig = go.Figure(data=[go.Scatter(x=x, y=y)])
 
-fig = {
-    "data": [go.Scatter(x=x, y=y)],
-    "layout": go.Layout(title="Force Constant x Residue x PCA Modes (All)",
-                        xaxis=dict(title = "Residue Number"),
-                        yaxis=dict(title = "Force Constant (Kcal / mol * " + '\u00C5' +'\u00B2' + ")")
-                       )
-}
+# Update layout
+fig.update_layout(title="Force Constant x Residue x PCA Modes (All)",
+                  xaxis_title="Residue Number",
+                  yaxis_title="Force Constant (Kcal / mol * " + '\u00C5' +'\u00B2' + ")",
+                  height=600)
 
-plotly.offline.iplot(fig)
+# Show the figure (renderer changes for colab and jupyter)
+rend = 'colab' if 'google.colab' in sys.modules else ''
+fig.show(renderer=rend)
 ```
 
 <img src='_static/plot6.png'></img>
@@ -1419,33 +1446,32 @@ Visualizing the results of the three **hinge point prediction** methods:
 
 ```python
 # Show trajectory
-view1 = nglview.show_simpletraj(nglview.SimpletrajTrajectory(proj1_dcd, bfactor_pdb[1]), gui=True)
+view1 = nglview.show_simpletraj(nglview.SimpletrajTrajectory(proj1_xtc, bfactor_pdb[1]), gui=True)
 view1.add_representation(repr_type='surface', selection=hinges_dyndom["clusters"][0]["residues"], color='red')
 view1.add_representation(repr_type='surface', selection=hinges_dyndom["clusters"][1]["residues"], color='green')
 view1._remote_call('setSize', target='Widget', args=['300px','400px'])
 view1
-view2 = nglview.show_simpletraj(nglview.SimpletrajTrajectory(proj1_dcd, bfactor_pdb[1]), gui=True)
+view2 = nglview.show_simpletraj(nglview.SimpletrajTrajectory(proj1_xtc, bfactor_pdb[1]), gui=True)
 view2.add_representation(repr_type='surface', selection=hinges_bfactor["hinge_residues"], color='red')
 view2._remote_call('setSize', target='Widget', args=['300px','400px'])
 view2
-view3 = nglview.show_simpletraj(nglview.SimpletrajTrajectory(proj1_dcd, bfactor_pdb[1]), gui=True)
+view3 = nglview.show_simpletraj(nglview.SimpletrajTrajectory(proj1_xtc, bfactor_pdb[1]), gui=True)
 view3.add_representation(repr_type='surface', selection=str(hinges_fcte["hinge_residues"]), color='red')    
 view3._remote_call('setSize', target='Widget', args=['300px','400px'])
 view3
 ipywidgets.HBox([view1, view2, view3])
 ```
 
-<img src='_static/traj12.gif' style='float:left; width:33%'></img><img src='_static/traj13.gif' style='float:left; width:33%'></img><img src='_static/traj14.gif' style='float:left; width:33%'></img>
+<img src='_static/traj12.gif' style='float:left; width:33%;'></img><img src='_static/traj13.gif' style='float:left; width:33%;'></img><img src='_static/traj14.gif' style='float:left; width:33%;'></img>
 
 <a id="stiffness"></a>
 ***
-
 ### PCAsuite: Apparent Stiffness
 
 **Stiffness** is defined as the **force-constant** acting between **two residues** in the case of completely disconnected oscillators. It is defined in the **harmonic limit** from the variance in the **inter-residue distance**:
 
 <center>
-$$\Large K_{ij}^{app}= \frac{K_{b}T}{\langle{(R_{ij}-\langle{R_{ij}}\rangle)^{2}\rangle}}$$
+$\Large K_{ij}^{app}= \frac{K_{b}T}{\langle{(R_{ij}-\langle{R_{ij}}\rangle)^{2}\rangle}}$
 </center>
 
 where **Kb** is the **Boltzman’s constant** and **T** is the **temperature**. The **averages** are computed using trajectory **ensembles** (e.g. DMD, BD or NMA-based simulations).
@@ -1492,18 +1518,19 @@ Plotting the **Apparent Stiffness** matrix:
 y = np.array(pcz_stiffness_report['stiffness'])
 x = list(range(1,len(y)))
 
-plotly.offline.init_notebook_mode(connected=True)
+# Create a heatmap plot
+fig = go.Figure(data=[go.Heatmap(x=x, y=x, z=y, type = 'heatmap', colorscale = 'reds')])
 
-fig = {
-    "data": [go.Heatmap(x=x, y=x, z=y, type = 'heatmap', colorscale = 'reds')],
-    "layout": go.Layout(title="Apparent Stiffness",
-                        xaxis=dict(title = "Residue Number"),
-                        yaxis=dict(title = "Residue Number"),
-                        width=800, height=800
-                       )
-}
+# Update layout
+fig.update_layout(title="Apparent Stiffness",
+                  xaxis_title="Residue Number",
+                  yaxis_title="Residue Number",
+                  width=800,
+                  height=800)
 
-plotly.offline.iplot(fig)
+# Show the figure (renderer changes for colab and jupyter)
+rend = 'colab' if 'google.colab' in sys.modules else ''
+fig.show(renderer=rend)
 ```
 
 <img src='_static/plot7.png'></img>
@@ -1515,25 +1542,25 @@ Plotting the **Apparent Stiffness** matrix (Logarithmic Scale):
 y = np.array(pcz_stiffness_report['stiffness_log'])
 x = list(range(1,len(y)))
 
-plotly.offline.init_notebook_mode(connected=True)
+# Create a heatmap plot
+fig = go.Figure(data=[go.Heatmap(x=x, y=x, z=y, type = 'heatmap', colorscale = 'reds')])
 
-fig = {
-    "data": [go.Heatmap(x=x, y=x, z=y, type = 'heatmap', colorscale = 'reds')],
-    "layout": go.Layout(title="Apparent Stiffness (Logarithmic Scale)",
-                        xaxis=dict(title = "Residue Number"),
-                        yaxis=dict(title = "Residue Number"),
-                        width=800, height=800
-                       )
-}
+# Update layout
+fig.update_layout(title="Apparent Stiffness (Logarithmic Scale)",
+                  xaxis_title="Residue Number",
+                  yaxis_title="Residue Number",
+                  width=800,
+                  height=800)
 
-plotly.offline.iplot(fig)
+# Show the figure (renderer changes for colab and jupyter)
+rend = 'colab' if 'google.colab' in sys.modules else ''
+fig.show(renderer=rend)
 ```
 
 <img src='_static/plot8.png'></img>
 
 <a id="collectivity"></a>
 ***
-
 ### PCAsuite: Collectivity Index
 
 **Collectivity index** is a numerical measure of **how many atoms are affected by a given mode**. This measure has been taken from a paper by Rafael Brüschweiler, [Collective protein dynamics and nuclear spin relaxation](https://doi.org/10.1063/1.469213).
@@ -1542,17 +1569,17 @@ The formula that defines this measure is:
 
 <br>
 <center>
-$$\Large{\kappa_{i}}=\frac{1}{N}exp\left\{-\sum \limits _{n=1}^{N} u_{i,n} ^{2}\space log\space {u_{i,n} ^{2}}\right\}$$
+$\Large{\kappa_{i}}=\frac{1}{N}exp\left\{-\sum \limits _{n=1}^{N} u_{i,n} ^{2}\space log\space {u_{i,n} ^{2}}\right\}$
 </center>
 <br><br>
 <center>
-$$\Large u_{i,n} ^{2} = \alpha \frac{Q_{i,3n-2} ^{2} \space + \space  Q_{i,3n-1} ^{2} \space + \space Q_{i,3n} ^{2}}{m_{n}}$$
+$\Large u_{i,n} ^{2} = \alpha \frac{Q_{i,3n-2} ^{2} \space + \space  Q_{i,3n-1} ^{2} \space + \space Q_{i,3n} ^{2}}{m_{n}}$
 </center>
 <br>
 
-**N** is the **number of atoms**, **Q** is the **eigenvector**, \\(\alpha\\) is a value used to **normalize the eigenvector**.
+**N** is the **number of atoms**, **Q** is the **eigenvector**, $\alpha$ is a value used to **normalize the eigenvector**.
 
-High values for \\(\kappa{_i}\\) means that the corresponding **eigenvector** affects **many of the atoms**, while lower values means that the **eigenvector** has a more **local behaviour**.
+High values for $\kappa{_i}$ means that the corresponding **eigenvector** affects **many of the atoms**, while lower values means that the **eigenvector** has a more **local behaviour**.
 
 The **pcz_collectivity** building block returns the **collectivity index** of the **macromolecule** associated to a given **eigenvector**. 
 
@@ -1597,25 +1624,25 @@ x = ["PC" + str(pc) for pc in x]
 
 y = [""]
 
-plotly.offline.init_notebook_mode(connected=True)
+# Create a heatmap plot
+fig = go.Figure(data=[go.Heatmap(x=x, y=y, z=[z], type = 'heatmap', colorscale = 'reds')])
 
-fig = {
-    "data": [go.Heatmap(x=x, y=y, z=[z], type = 'heatmap', colorscale = 'reds')],
-    "layout": go.Layout(title="Collectivity Index",
-                        xaxis=dict(title = "Principal Component"),
-                        yaxis=dict(title = "Collectivity"),
-                        width=1000, height=300
-                       )
-}
+# Update layout
+fig.update_layout(title="Collectivity Index",
+                  xaxis_title="rincipal Component",
+                  yaxis_title="Collectivity",
+                  width=1000,
+                  height=300)
 
-plotly.offline.iplot(fig)
+# Show the figure (renderer changes for colab and jupyter)
+rend = 'colab' if 'google.colab' in sys.modules else ''
+fig.show(renderer=rend)
 ```
 
 <img src='_static/plot9.png'></img>
 
 <a id="similarity"></a>
 ***
-
 ### PCAsuite: PCZ similarity
 
 A **quantitative comparison** of trajectories compressed into two congruent **PCZ-formatted** files can be computed. An example might be the **dynamics** of a protein in the presence and absence of a **ligand**, or a comparative analysis of the dynamics of a **wild-type** protein and a **mutant**. The comparison can be also used to compare the **conformational space** explored by trajectories generated using different methods, such as the ones used in this tutorial (BD, DMD, NMA), or even compare the **CG trajectories** with an **all-atom MD simulation**. 
@@ -1624,19 +1651,19 @@ The main **eigenvectors** can be used to check how similar two different traject
 <br><br>
 
 <center>
-$$\large \gamma_{AB} = \frac {1} {n} \sum \limits_{j=1}^{n} \sum \limits_{i=1}^{n} {(v_{i}^{A} · v_{j}^{B})^{2}}$$    
+$\large \gamma_{AB} = \frac {1} {n} \sum \limits_{j=1}^{n} \sum \limits_{i=1}^{n} {(v_{i}^{A} · v_{j}^{B})^{2}}$    
 </center>
 
 <br>
 
-where \\(γ_{AB}\\) is the **similarity index** between **trajectories A and B**, n is the number of **eigenvectors** needed to represent the 80-90% of the **total system variance** and \\(v_{i}^{A}\\) and \\(v_{j}^{B}\\) are the corresponding **eigenvectors** for **A and B**. Resulting **zero value** corresponds to **orthogonal** motions between **trajectories** while on the other hand, **unity values** correspond to **high degree** of **overlap** or **similarity**.
+where $γ_{AB}$ is the **similarity index** between **trajectories A and B**, n is the number of **eigenvectors** needed to represent the 80-90% of the **total system variance** and $v_{i}^{A}$ and $v_{j}^{B}$ are the corresponding **eigenvectors** for **A and B**. Resulting **zero value** corresponds to **orthogonal** motions between **trajectories** while on the other hand, **unity values** correspond to **high degree** of **overlap** or **similarity**.
 
 The **Root Mean Square Inner Product** (RMSIP) adds a square root to the previous equation, and is typically used to measure the similarity of the **N principal components** of the **covariance/correlation matrices**:
 
 <br><br>
 
 <center>
-$$\large {RMSIP} = \sqrt {\frac { \sum \limits_{j=1}^{n} \sum \limits_{i=1}^{n} {(v_{i}^{A} · v_{j}^{B})^{2}} } {N} }$$ 
+$\large {RMSIP} = \sqrt {\frac { \sum \limits_{j=1}^{n} \sum \limits_{i=1}^{n} {(v_{i}^{A} · v_{j}^{B})^{2}} } {N} }$ 
 </center>
 
 <br><br>
@@ -1649,19 +1676,19 @@ The **Root Weighted Square Inner Product** (RWSIP) includes the **eigenvalues** 
 <br><br>
 
 <center>
-$$\large {RWSIP} = \sqrt {\frac { \sum \limits_{j=1}^{n} \sum \limits_{i=1}^{n} {\lambda_{i}^{A} · \lambda_{j}^{B} (v_{i}^{A} · v_{j}^{B})^{2}} } {\sum \limits_{i=1}^{n} {\lambda_{i}^{A} · \lambda_{i}^{B} }} }$$    
+$\large {RWSIP} = \sqrt {\frac { \sum \limits_{j=1}^{n} \sum \limits_{i=1}^{n} {\lambda_{i}^{A} · \lambda_{j}^{B} (v_{i}^{A} · v_{j}^{B})^{2}} } {\sum \limits_{i=1}^{n} {\lambda_{i}^{A} · \lambda_{i}^{B} }} }$    
 </center>
 
 <br><br>
 
-where \\(λ_{i}^{A}\\) is the **eigenvalue** associated to the **eigenvector** i with unit vector \\(v_{i}^{A}\\). 
+where $λ_{i}^{A}$ is the **eigenvalue** associated to the **eigenvector** i with unit vector $v_{i}^{A}$. 
 
-*Alberto Perez et al. (2005)* introduced yet another method, including the **relative importance** of the different **eigenvectors** in explaining **trajectory variance**, extending this concept to all (or the *important* set of) **eigenvectors** and the subsequent **normalization** considering the **energy distribution** of the sets of **eigenvectors** \\(v_{i}^{A}\\) and \\(v_{j}^{B}\\). The **Weighted Cross Product** is calculated as:
+*Alberto Perez et al. (2005)* introduced yet another method, including the **relative importance** of the different **eigenvectors** in explaining **trajectory variance**, extending this concept to all (or the *important* set of) **eigenvectors** and the subsequent **normalization** considering the **energy distribution** of the sets of **eigenvectors** $v_{i}^{A}$ and $v_{j}^{B}$. The **Weighted Cross Product** is calculated as:
 
 <br><br>
 
 <center>
-$$\large \xi_{AB} = \frac 
+$\large \xi_{AB} = \frac 
 {2 \sum \limits_{i=1}^{i=z} \sum \limits_{j=1}^{j=z} \left(
 {\left( v_{i}^{A} · v_{j}^{B} \right) \frac
 { exp \space \left[{ - \frac{(\Delta x)^{2}}{\lambda_{i}^{A}} - \frac{(\Delta x)^{2}}{\lambda_{j}^{B}} }\right]  } 
@@ -1682,35 +1709,35 @@ $$\large \xi_{AB} = \frac
 { \left( \sum \limits_{j=1}^{j=z} {exp \space \left[{ - \frac{(\Delta x)^{2}}{\lambda_{j}^{B}}  }\right]} \right)^{2}}
 \right)^{2}}
 } 
-$$    
+$    
 </center>
 <br><br>
 
 The method assumes that the molecule moves sampling states defined by a **common displacement (Δx)** (*Amplifying factor*) along the different **eigenvectors**. Thus, the **weight** of each **eigenvector** in defining the **flexibility space** will be given by its **Boltzman factor** computed from the **harmonic energy penalty**. The sum can be calculated for all (z=m) or for a number of eigenvectors (z=n).
 
-All these **similarity indexes** (***Similarity Index (\\(\gamma_{AB}\\))***, ***RMSIP***, ***RWSIP*** and ***WCP***) are implemented in the **pcz_similarity** building block.
+All these **similarity indexes** (***Similarity Index ($\gamma_{AB}$)***, ***RMSIP***, ***RWSIP*** and ***WCP***) are implemented in the **pcz_similarity** building block.
 
 References:
 
 **Similarities between principal components of protein dynamics and random diffusion.**<br>
 *Phys. Rev. E 2000; 62, 8438*<br>
-*Available at: [https://doi.org/10.1103/PhysRevE.62.8438](https://doi.org/10.1103/PhysRevE.62.8438)*
+*Available at: https://doi.org/10.1103/PhysRevE.62.8438*
 
 **Convergence of sampling in protein simulations.**<br>
 *Phys. Rev. E 2002; 65, 031910*<br>
-*Available at: [https://doi.org/10.1103/PhysRevE.65.031910](https://doi.org/10.1103/PhysRevE.65.031910)*
+*Available at: https://doi.org/10.1103/PhysRevE.65.031910*
 
 **Exploring the Essential Dynamics of B-DNA.**<br>
 *J. Chem. Theory Comput. 2005, 1, 790-800*<br>
-*Available at: [https://doi.org/10.1021/ct050051s](https://doi.org/10.1021/ct050051s)*
+*Available at: https://doi.org/10.1021/ct050051s*
 
 **Convergent dynamics in the protease enzymatic superfamily.**<br>
 *J. Am. Chem. Soc. 2006, 128, 9766-9772*<br>
-*Available at: [https://doi.org/10.1021/ja060896t](https://doi.org/10.1021/ja060896t)*
+*Available at: https://doi.org/10.1021/ja060896t*
 
 **Measuring and comparing structural fluctuation patterns in large protein datasets.**<br>
 *Bioinformatics 2012, 28, 19, 2431–2440*<br>
-*Available at: [https://doi.org/10.1093/bioinformatics/bts445](https://doi.org/10.1093/bioinformatics/bts445)*
+*Available at: https://doi.org/10.1093/bioinformatics/bts445*
 
 ***
 **Building Blocks** used:
@@ -1772,8 +1799,6 @@ Plotting the **Similarity Index** matrices for the different methods **(SimIndex
 ```python
 from plotly import subplots
 
-plotly.offline.init_notebook_mode(connected=True)
-
 s = len(methods)
 
 y = np.array(simIndex_matrix)
@@ -1818,10 +1843,12 @@ fig['layout']['yaxis4'].update(tickmode = 'array', tickvals = [1, 2, 3, 4], tick
 
 fig.update_layout(width=1000, height=1000)
 
-plotly.offline.iplot(fig)
+# Show the figure (renderer changes for colab and jupyter)
+rend = 'colab' if 'google.colab' in sys.modules else ''
+fig.show(renderer=rend)
 ```
 
-<img src='_static/plot10.png'></img>
+<img src='_static/plot10.png'>
 
 ***
 <a id="questions"></a>
