@@ -148,6 +148,7 @@ if 'google.colab' in sys.modules:
 import nglview
 import simpletraj
 import plotly
+import sys
 import plotly.graph_objs as go
 import numpy as np
 import ipywidgets
