@@ -8,5 +8,8 @@ dependencies:
   - biobb_structure_utils==5.1.0
   - biobb_analysis==5.1.0
   - plotly
+  - jupyterlab=3.6
+  - nodejs=16
+  - ipywidgets=7
   - nglview
   - simpletraj
